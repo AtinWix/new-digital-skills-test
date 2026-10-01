@@ -187,72 +187,27 @@ table.coll th{ background:var(--paper); }
 </header>
 <main><div class="sheet" id="app" aria-live="polite"></div></main>
 
-<script type="text/plain" id="gs">
-// Computer skills check: automatic results
-// Paste into a Google Sheet: Extensions > Apps Script. Then Deploy > New deployment > Web app
-// (Execute as: Me, Who has access: Anyone). Copy the /exec link into the test's teacher setup page.
-
-const ALLOWED_DOMAIN = "ncclondon.ac.uk"; // results are only emailed to addresses ending in this
-const SHEET_NAME = "Results";
-
-function doPost(e) {
-  const lock = LockService.getScriptLock();
-  lock.waitLock(15000);
-  try {
-    const d = JSON.parse(e.postData.contents);
-    const safe = v => (typeof v === "string" && /^[=+\-@]/.test(v)) ? "'" + v : v;
-    const ss = SpreadsheetApp.getActiveSpreadsheet();
-    const sh = ss.getSheetByName(SHEET_NAME) || ss.insertSheet(SHEET_NAME);
-    if (sh.getLastRow() === 0) {
-      sh.appendRow(["Received", "Teacher", "Name", "Student number", "Level / class", "Date", "Minutes",
-        "Score", "Out of", "Percent", "Result", "Sections", "Questions", "Notes", "Results code"]);
-      sh.setFrozenRows(1);
-    }
-    sh.appendRow([new Date(), d.teacher, d.name, d.id, d.cls, d.date, d.mins, d.got, d.of, d.pct,
-      d.band, d.sections, d.tasks, d.notes, d.code].map(safe));
-
-    let to = String(d.teacherEmail || "").trim().toLowerCase();
-    if (!to.endsWith("@" + ALLOWED_DOMAIN)) to = Session.getEffectiveUser().getEmail();
-    MailApp.sendEmail({
-      to: to,
-      subject: "Computer skills check: " + d.name + " (" + d.pct + "%, " + d.band + ")",
-      body: d.text
-    });
-    return out({ ok: true });
-  } catch (err) {
-    return out({ ok: false, error: String(err) });
-  } finally {
-    lock.releaseLock();
-  }
-}
-
-function doGet() {
-  return out({ ok: true, message: "Results link is working." });
-}
-
-function out(obj) {
-  return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentService.MimeType.JSON);
-}
-</script>
 <script>
 (function(){
 "use strict";
 
 /* ---------- Settings from the link ----------
    ?tl=Atin|atin@x;Barry|barry@x   teachers students can choose (email optional)
-   &a=APPS_SCRIPT_URL sends results automatically (Google Apps Script web app)
    &t=teacher@email   (older links) single teacher email
    &c=E2A             class name
-   &f=FORMLINK        pre-filled Microsoft/Google Form link containing the word RESULTS
+   &f=FORMLINK        pre-filled Microsoft Form link (overrides DEFAULT_FORM below)
    &s=UKICFS          sections to include (any order/subset)
    ?mode=teacher      opens the teacher setup page                                  */
+/* Paste your Microsoft Form pre-filled link between the quotes. Every student link then uses it. */
+const DEFAULT_FORM = "https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=mUft038080m159qCPJXo2Y1qZCuioLZMr502V7pP7tRUN0hDTUZZQlhFUTRETU5RT1dEVzZMNlFOWSQlQCNjPTEu&ra3cc52ae57554be3b58eab2784f9484b=NAME&ra3ff38e9da894395b81027ba36d48acd=NUMBER&r5b1587f25b734fcd81649ff67c41be32=TEACHER&r0fa48ae72ace4d698a728e55812f11c2=%22LEVEL%22&ra6fa3be9e26f4e45890b645010bafadb=SCORE&r81ddab9b551b447fb668a6c23d6a4af6=RESULT";
+/* Level wording as it appears in the form's choice options, where it differs from the test */
+const FORM_LEVELS = {};
 const Q = new URLSearchParams(location.search);
 const CFG = {
   teacher: (Q.get("t") || "").trim(),
-  auto: (Q.get("a") || "").trim(),
   teachers: (Q.get("tl") || "").split(";").map(x => { const [n, e] = x.split("|"); return {name:(n || "").trim(), email:(e || "").trim()}; }).filter(x => x.name),
   cls: (Q.get("c") || "").trim(),
-  form: (Q.get("f") || "").trim(),
+  form: (Q.get("f") || DEFAULT_FORM).trim(),
   secs: (Q.get("s") || "UKICFS").toUpperCase(),
   mode: Q.get("mode") || ""
 };
@@ -860,8 +815,8 @@ const ACTIVE_SECS = SECTIONS.filter(s => ACTIVE.some(t => t.sec === s.key));
 let S = null;       // saved state
 let cur = null;     // live state for current task
 
-function freshState(name, id, cls, teacher, temail){
-  return { v:VERSION, cfg:CFG.secs, name, id, cls, teacher, temail, started:Date.now(), idx:0, ans:{}, notes:{}, finished:null, sent:false };
+function freshState(name, id, cls, teacher, temail, level, skill){
+  return { v:VERSION, cfg:CFG.secs, name, id, cls, teacher, temail, level, skill, started:Date.now(), idx:0, ans:{}, notes:{}, finished:null, sent:false };
 }
 
 /* ---------- Header ---------- */
@@ -898,45 +853,87 @@ function startScreen(){
 }
 
 /* About you: name, number, ESOL teacher, level, class */
-function aboutScreen(){
+/* Page 1: the student types the teacher's name from the board. */
+let chosenTeacher = null;
+function savedTeacher(){
+  if (CFG.teachers.length === 1) return CFG.teachers[0];
+  return chosenTeacher;
+}
+/* "  atin   WICKHAM " -> "Atin Wickham", "o'brien" -> "O'Brien" */
+function tidyName(v){
+  return (v || "").replace(/[|;]/g, " ").replace(/\s+/g, " ").trim().toLocaleLowerCase("en-GB")
+    .replace(/(^|[\s\-'’])(\p{L})/gu, (m, a, b) => a + b.toLocaleUpperCase("en-GB"));
+}
+function teacherFirst(){
   app.innerHTML = "";
+  drawRoute(null);
+  const clean = tidyName;
+  const OTHER = "Another teacher";
+  let tsel = null;
+  const tin = h("input", {class:"field" + (CFG.teachers.length ? " hidden" : ""), id:"tt", type:"text", autocomplete:"off", placeholder:"e.g. Atin", style: CFG.teachers.length ? "margin-top:8px" : null});
+  if (CFG.teachers.length){
+    tsel = h("select", {class:"field", id:"tts"}, h("option", {value:""}, "Choose your name"),
+      CFG.teachers.map(x => h("option", {value:x.name}, x.name)), h("option", {value:OTHER}, OTHER));
+    tsel.addEventListener("change", () => { tin.classList.toggle("hidden", tsel.value !== OTHER); if (tsel.value === OTHER) tin.focus(); er.textContent = ""; });
+  }
+  const er = h("span", {class:"err", role:"alert"});
+  const go = h("button", {class:"btn", type:"button", onclick: () => {
+    let t = null;
+    if (tsel && tsel.value && tsel.value !== OTHER) t = CFG.teachers.find(x => x.name === tsel.value);
+    else if (clean(tin.value).length > 1) t = {name: clean(tin.value), email: CFG.teacher};
+    if (!t){ er.textContent = tsel && !tsel.value ? "Choose your name." : "Type your name."; (tsel && tsel.value !== OTHER ? tsel : tin).focus(); return; }
+    t = {name: clean(t.name), email: t.email || ""};
+    chosenTeacher = t;
+    aboutScreen();
+  }}, "Next");
+  tin.addEventListener("keydown", e => { if (e.key === "Enter") go.click(); });
+  tin.addEventListener("input", () => er.textContent = "");
+  app.append(...[
+    h("h1", null, "What is your teacher's name?"),
+    h("p", {style:"font-size:1.15em"}, "👀 Look at the board. Write your teacher's name."),
+    h("label", {class:"lab", for: tsel ? "tts" : "tt"}, "Teacher's name"), tsel, tin, er,
+    h("div", {class:"nav"}, h("a", {href:"?mode=teacher", class:"muted"}, "Teachers: setup"), go)].filter(Boolean));
+  setTimeout(() => (tsel || tin).focus(), 50);
+}
+
+/* About you: name, number, level, class */
+function aboutScreen(){
+  const T = savedTeacher();
+  if (!T){ teacherFirst(); return; }
+  app.innerHTML = "";
+  drawRoute(null);
   const clean = v => (v || "").trim().replace(/\|/g, "/");
   const sel = (id, first, items) => h("select", {class:"field", id}, h("option", {value:""}, first), items.map(x => h("option", {value:x}, x)));
   app.append(h("h1", null, "About you"),
     h("p", null, "This test checks how you use a computer. It takes about 30 minutes. If you don't understand a question, click 😕 I don't understand."));
   const nm = h("input", {class:"field", id:"sn", type:"text", autocomplete:"off", placeholder:"e.g. Fatima Ali"});
   const id = h("input", {class:"field", id:"si", type:"text", autocomplete:"off", inputmode:"numeric", placeholder:"e.g. 12345678"});
-  const OTHER = "Another teacher";
-  let tsel = null, tother = null;
-  if (CFG.teachers.length){
-    tsel = sel("st", "Choose your teacher", CFG.teachers.map(x => x.name).concat([OTHER]));
-    tother = h("input", {class:"field hidden", id:"sto", type:"text", autocomplete:"off", placeholder:"Type your teacher's name", style:"margin-top:8px", "aria-label":"Teacher's name"});
-    tsel.addEventListener("change", () => { tother.classList.toggle("hidden", tsel.value !== OTHER); if (tsel.value === OTHER) tother.focus(); chk(); });
-  } else {
-    tother = h("input", {class:"field", id:"st", type:"text", autocomplete:"off", placeholder:"e.g. Atin"});
-  }
-  const lv = sel("sl", "Choose your level", ["Entry 1","Entry 2","Entry 3","Level 1","Level 2","I don't know"]);
-  const sk = sel("sk", "Choose your class", ["Reading","Writing","Listening and Speaking","I don't know"]);
-  const teacher = () => {
-    if (tsel && tsel.value && tsel.value !== OTHER){ const t = CFG.teachers.find(x => x.name === tsel.value); return {name: clean(t.name), email: t.email}; }
-    return {name: clean(tother.value), email: CFG.teacher};
-  };
-  const go = h("button", {class:"btn", type:"button", disabled:true, onclick: () => {
-    const t = teacher();
-    S = freshState(clean(nm.value), clean(id.value), [lv.value, sk.value].filter(Boolean).join(" / "), t.name, t.email);
+  const lv = sel("sl", "Choose your level", ["Pre-Entry","Entry 1","Entry 2","Entry 3","Level 1","Level 2","I don't know"]);
+  const errs = {};
+  const err = (key, el) => { errs[key] = h("span", {class:"err", role:"alert"}); el.after(errs[key]); };
+  const go = h("button", {class:"btn", type:"button", onclick: () => {
+    const checks = [
+      ["nm", nm.value.trim().length > 1, "Write your name.", nm],
+      ["id", !!id.value.trim(), "Write your student number.", id],
+      ["lv", !!lv.value, "Choose your level.", lv]
+    ];
+    let first = null;
+    checks.forEach(([k, ok, text, el]) => { errs[k].textContent = ok ? "" : text; if (!ok && !first) first = el; });
+    if (first){ first.focus(); return; }
+    S = freshState(clean(nm.value), clean(id.value), lv.value, T.name, T.email || CFG.teacher, lv.value, "");
     save(); taskScreen();
   }}, "Start the test");
-  function chk(){ go.disabled = !(nm.value.trim().length > 1 && id.value.trim() && teacher().name.length > 1 && lv.value && sk.value); }
-  [nm, id, tother].forEach(x => x.addEventListener("input", chk));
-  [lv, sk].forEach(x => x.addEventListener("change", chk));
-  [nm, id, tother].forEach(x => x.addEventListener("keydown", e => { if (e.key === "Enter" && !go.disabled) go.click(); }));
-  app.append(
+  const clear = () => Object.values(errs).forEach(e => { if (e.textContent) e.textContent = ""; });
+  [nm, id].forEach(x => { x.addEventListener("input", clear); x.addEventListener("keydown", e => { if (e.key === "Enter") go.click(); }); });
+  lv.addEventListener("change", clear);
+  const change = CFG.teachers.length === 1 ? null :
+    h("button", {class:"skip", type:"button", onclick: () => { chosenTeacher = null; teacherFirst(); }}, "Change");
+  app.append(...[
     h("label", {class:"lab", for:"sn"}, "Your full name"), nm,
     h("label", {class:"lab", for:"si"}, "Student number"), id,
-    h("label", {class:"lab", for:"st"}, "ESOL teacher"), tsel, tother,
     h("label", {class:"lab", for:"sl"}, "Level"), lv,
-    h("label", {class:"lab", for:"sk"}, "Class"), sk,
-    h("div", {class:"nav"}, h("a", {href:"?mode=teacher", class:"muted"}, "Teachers: set up this test"), go));
+    h("div", {class:"nav"}, h("span", {class:"muted"}, "Teacher: " + T.name + " ", change), go)].filter(Boolean));
+  err("nm", nm); err("id", id); err("lv", lv);
   setTimeout(() => nm.focus(), 50);
 }
 
@@ -995,7 +992,7 @@ function resultCode(R){
 function resultText(R){
   const lines = [
     "Computer skills check – results", "",
-    "Name: " + S.name, "Student number: " + S.id, "ESOL teacher: " + (S.teacher || "-"), "Level / class: " + (S.cls || "-"),
+    "Name: " + S.name, "Student number: " + S.id, "ESOL teacher: " + (S.teacher || "-"), "Level: " + (S.cls || "-"),
     "Date: " + stamp(new Date(S.finished)), "Time taken: " + R.mins + " minutes", "",
     "Total: " + R.got + " / " + R.of + " (" + R.pct + "%)", "Result: " + R.band.name, ""
   ];
@@ -1024,21 +1021,23 @@ function finish(){
   app.append(grid, h("p", {style:"margin-top:10px"}, h("b", null, "Total: " + R.got + " / " + R.of)));
 
   const temail = S.temail || CFG.teacher;
-  const autoBox = h("div", {class:"msg", role:"status", style:"margin-top:20px;font-weight:700"});
-  if (CFG.auto) app.append(autoBox);
-  app.append(h("h2", {style:"margin-top:24px"}, CFG.auto ? "Other ways to send your results" : "Send your results to your teacher"));
   const status = h("div", {class:"msg hidden", role:"status"});
   const done = (text) => { status.classList.remove("hidden"); status.className = "msg ok"; status.textContent = text; };
   const acts = h("div", {class:"actions"});
   if (CFG.form){
-    acts.append(h("button", {class:"btn go", type:"button", onclick: () => {
-      const url = CFG.form.includes("RESULTS") ? CFG.form.replace("RESULTS", encodeURIComponent(code)) : CFG.form;
-      window.open(url, "_blank", "noopener");
-      done("The form is open in a new tab. Click Submit on the form. Then tell your teacher you have finished.");
-    }}, "Send with the form"));
+    const last = h("div", {class:"note", style:"margin-top:22px"},
+      h("p", {style:"font-size:1.15em"}, h("b", null, S.formSent ? "Did you click Submit?" : "Last step: send your results to your teacher.")),
+      h("p", null, "1. Click the green button."), h("p", null, "2. Your results are already in the form. Click Submit."),
+      h("p", {style:"margin-top:12px"}, h("button", {class:"btn go", type:"button", style:"font-size:1.1em;padding:14px 28px", onclick: () => {
+        S.formSent = true; save();
+        location.href = fillForm(CFG.form, R, code);
+      }}, "📨 Send to my teacher")));
+    app.append(last, h("h2", {style:"margin-top:24px"}, "Other ways to send"));
+  } else {
+    app.append(h("h2", {style:"margin-top:24px"}, "Send your results to your teacher"));
   }
   if (temail){
-    acts.append(h("button", {class:"btn" + (CFG.form ? " ghost" : ""), type:"button", onclick: () => {
+    acts.append(h("button", {class:"btn ghost", type:"button", onclick: () => {
       const body = resultText(R);
       location.href = "mailto:" + temail + "?subject=" + encodeURIComponent("Computer skills check – " + S.name + " " + S.id) + "&body=" + encodeURIComponent(body);
       done("Your email app should open. Click Send. If nothing opens, click Copy results and paste them into Teams or email.");
@@ -1048,7 +1047,6 @@ function finish(){
     h("button", {class:"btn ghost", type:"button", onclick: () => copyText(resultText(R), ok => ok ? done("Copied. Now paste it (Ctrl+V) into Teams or an email to your teacher.") : done("Copy did not work. Select the code below and copy it."))}, "Copy results"),
     h("button", {class:"btn ghost", type:"button", onclick: () => { download("ICT-results-" + (S.name || "student").replace(/[^\w-]+/g, "_") + ".txt", resultText(R)); done("Saved. Upload this file to your teacher in Teams."); }}, "Download results"));
   app.append(acts, status);
-  if (CFG.auto) autoSend(R, code, temail, autoBox);
 
   const ta = h("textarea", {class:"code", rows:"3", readonly:true, "aria-label":"Results code"});
   ta.value = code;
@@ -1069,35 +1067,33 @@ function finish(){
   window.scrollTo(0, 0);
 }
 
-/* ---------- Automatic sending (Google Apps Script) ---------- */
-function autoSend(R, code, temail, box){
-  const okMsg = () => { box.className = "msg ok"; box.textContent = "✓ Your results are sent to " + (S.teacher || "your teacher") + ". Tell your teacher you have finished."; };
-  if (S.sent){ okMsg(); return; }
-  box.className = "msg"; box.textContent = "Sending your results to " + (S.teacher || "your teacher") + "…";
-  const data = {
-    code, text: resultText(R), name:S.name, id:S.id, cls:S.cls, teacher:S.teacher || "", teacherEmail: temail || "",
-    date: stamp(new Date(S.finished)), mins:R.mins, got:R.got, of:R.of, pct:R.pct, band:R.band.name,
-    sections: R.secs.map(s => s.name + " " + s.got + "/" + s.of).join("; "),
-    tasks: ACTIVE.map(t => t.id + ":" + (S.ans[t.id] === 1 ? "✓" : S.ans[t.id] === "s" ? "?" : "✗")).join(" "),
-    notes: Object.keys(S.notes).map(k => k + " " + S.notes[k]).join("; ")
+/* ---------- Microsoft Form: fill placeholder answers ---------- */
+function formValues(R, code){
+  const sec = k => { const x = R.secs.find(s => s.key === k); return x ? x.got + "/" + x.of : "-"; };
+  const details = ACTIVE.map(t => t.id + " " + (S.ans[t.id] === 1 ? "✓" : S.ans[t.id] === "s" ? "😕" : "✗")).join(", ");
+  return {
+    NAME:S.name, NUMBER:S.id, TEACHER:S.teacher || "", LEVEL:FORM_LEVELS[S.level] || S.level || "", CLASS:S.skill || "",
+    DATE:stamp(new Date(S.finished)), MINUTES:String(R.mins), SCORE:R.got + "/" + R.of, PERCENT:R.pct + "%", RESULT:R.band.name,
+    MOUSE:sec("U"), KEYBOARD:sec("K"), INTERNET:sec("I"), EMAIL:sec("C"), FILES:sec("F"), SAFETY:sec("S"),
+    DETAILS:details, RESULTS:code, CODE:code
   };
-  const body = JSON.stringify(data);
-  const fail = () => {
-    box.className = "msg bad";
-    box.innerHTML = "";
-    box.append("Your results did not send. Check the internet, then ", h("button", {class:"btn small", type:"button", onclick: () => autoSend(R, code, temail, box)}, "Try again"), " or use a button below.");
-  };
-  const tryFetch = (attempt) => fetch(CFG.auto, {method:"POST", body, headers:{"Content-Type":"text/plain;charset=utf-8"}})
-    .then(r => r.json())
-    .then(j => { if (j && j.ok){ S.sent = true; save(); okMsg(); } else fail(); })
-    .catch(() => {
-      if (attempt < 2) return new Promise(res => setTimeout(res, 1500)).then(() => tryFetch(attempt + 1));
-      // Last try without reading the reply (some networks block it). Probably sent.
-      return fetch(CFG.auto, {method:"POST", mode:"no-cors", body, headers:{"Content-Type":"text/plain;charset=utf-8"}})
-        .then(() => { S.sent = true; save(); box.className = "msg ok"; box.textContent = "✓ Your results are probably sent. Tell your teacher you have finished."; })
-        .catch(fail);
-    });
-  tryFetch(1);
+}
+function fillForm(url, R, code){
+  const vals = formValues(R, code);
+  const qi = url.indexOf("?");
+  if (qi < 0) return url;
+  const base = url.slice(0, qi), rest = url.slice(qi + 1).split("#")[0];
+  return base + "?" + rest.split("&").map(pair => {
+    const i = pair.indexOf("=");
+    if (i < 0) return pair;
+    let v; try { v = decodeURIComponent(pair.slice(i + 1).replace(/\+/g, " ")); } catch(e){ return pair; }
+    // Choice questions come through in quotes, e.g. "Entry 1"
+    const quoted = /^".*"$/.test(v.trim());
+    const key = v.trim().replace(/^"|"$/g, "").toUpperCase();
+    if (!Object.prototype.hasOwnProperty.call(vals, key)) return pair;
+    const out = quoted ? JSON.stringify(vals[key]) : vals[key];
+    return pair.slice(0, i) + "=" + encodeURIComponent(out);
+  }).join("&");
 }
 
 /* ---------- Teacher page ---------- */
@@ -1111,8 +1107,7 @@ function teacherScreen(){
   const startList = CFG.teachers.length ? CFG.teachers.map(x => x.name + (x.email ? ", " + x.email : "")).join("\n") : (CFG.teacher ? "Your name, " + CFG.teacher : "");
   const em = h("textarea", {class:"field", id:"te", rows:"4", placeholder:"Atin, atin.wickham@ncclondon.ac.uk\nBarry, barry.smith@ncclondon.ac.uk\nJoey, joey.jones@ncclondon.ac.uk"});
   em.value = startList;
-  const au = h("input", {class:"field", id:"ta", type:"url", placeholder:"https://script.google.com/macros/s/…/exec", value: CFG.auto});
-  const fm = h("input", {class:"field", id:"tf", type:"url", placeholder:"Paste a pre-filled form link that contains the word RESULTS", value: CFG.form});
+  const fm = h("input", {class:"field", id:"tf", type:"url", placeholder:"https://forms.office.com/Pages/ResponsePage.aspx?id=…", value: Q.get("f") || ""});
   const boxes = SECTIONS.map(s => {
     const n = ACTIVE.length ? TASKS.filter(t => t.sec === s.key).length : 0;
     const c = h("input", {type:"checkbox", id:"sec" + s.key, checked: CFG.secs.includes(s.key)});
@@ -1125,37 +1120,28 @@ function teacherScreen(){
     const p = new URLSearchParams();
     const tl = em.value.split(/\n+/).map(l => { const i = l.indexOf(","); const n = (i < 0 ? l : l.slice(0, i)).trim().replace(/[|;]/g, ""); const e = i < 0 ? "" : l.slice(i + 1).trim().replace(/[|;]/g, ""); return n ? n + (e ? "|" + e : "") : ""; }).filter(Boolean).join(";");
     if (tl) p.set("tl", tl);
-    if (au.value.trim()) p.set("a", au.value.trim());
     if (fm.value.trim()) p.set("f", fm.value.trim());
     const s = boxes.filter(b => b.c.checked).map(b => b.s.key).join("");
     if (s && s !== "UKICFS") p.set("s", s);
     out.value = base + (p.toString() ? "?" + p.toString() : "");
-    st.textContent = fm.value.trim() && !fm.value.includes("RESULTS") ? "The form link does not contain the word RESULTS, so results won't fill in automatically." : "";
+    st.textContent = fm.value.trim() && !/=(NAME|SCORE|RESULTS|CODE)\b/i.test(fm.value) ? "This form link has no placeholder words (like NAME or SCORE), so results won't fill in." : "";
   };
-  [em, fm, au].forEach(x => x.addEventListener("input", build));
+  [em, fm].forEach(x => x.addEventListener("input", build));
   boxes.forEach(b => b.c.addEventListener("change", build));
   build();
 
   app.append(
     h("label", {class:"lab", for:"te"}, "Teachers"), em,
-    h("p", {class:"muted"}, "One teacher per line: name, then a comma, then email. Students choose their teacher first. The email is used to send results to the right person."),
-    h("label", {class:"lab", for:"ta"}, "Automatic results link (recommended)"), au,
-    h("p", {class:"muted"}, "Results are emailed to the chosen teacher and added to a Google Sheet as soon as each student finishes. Nobody needs to click anything."),
-    h("details", null, h("summary", null, "How to make the automatic results link (10 minutes, once)"),
-      h("p", null, "1. Sign in to Google. Make a new Google Sheet, e.g. 'ICT check results'."),
-      h("p", null, "2. In the sheet, click Extensions, then Apps Script. Delete what's there and paste in the code below. Change ALLOWED_DOMAIN if needed. Click Save."),
-      h("p", null, "3. Click Deploy, then New deployment. Choose type: Web app. Execute as: Me. Who has access: Anyone. Click Deploy and allow access."),
-      h("p", null, "4. Copy the Web app URL (it ends in /exec) and paste it in the box above."),
-      h("p", null, "Each result goes to the teacher the student chose, if their email ends in the allowed domain. Otherwise it goes to you. Every result is also saved in the sheet."),
-      h("p", null, "Check your college's data protection rules before keeping student names in a personal Google account."),
-      (() => { const gs = h("textarea", {class:"code", rows:"10", readonly:true, "aria-label":"Apps Script code"}); gs.value = $("gs").textContent.trim(); return gs; })(),
-      h("div", {class:"actions"}, h("button", {class:"btn small", type:"button", onclick: (e) => copyText($("gs").textContent.trim(), ok => e.target.textContent = ok ? "Code copied" : "Select the code and copy it")}, "Copy the code"))),
-    h("label", {class:"lab", for:"tf"}, "Microsoft Form or Google Form link (optional)"), fm,
-    h("details", null, h("summary", null, "How to make the form"),
-      h("p", null, "1. Make a form with one long-answer question, e.g. 'Results'."),
-      h("p", null, "2. Get the pre-filled link. In Microsoft Forms it's under '…' then 'Get pre-filled URL'. In Google Forms it's under '⋮' then 'Get pre-filled link'."),
-      h("p", null, "3. Type the word RESULTS as the answer, then copy the link and paste it here."),
-      h("p", null, "4. Students click 'Send with the form' and then Submit. Export the responses to Excel and paste the column into the results sheet below.")),
+    h("p", {class:"muted"}, "Put just your own name to make a link for your class: the first page is then skipped and your name goes with every result. Several names (one per line) gives a drop-down on the first page instead. An email after a comma is optional."),
+    h("label", {class:"lab", for:"tf"}, "Microsoft Form link (puts results into Excel)"), fm,
+    h("p", {class:"muted"}, DEFAULT_FORM ? "A form is already built into this test. Only fill this in to use a different form." : "Students get a 'Send to my teacher' button. Their results fill in the form, they click Submit, and a new row appears in your Excel sheet."),
+    h("details", null, h("summary", null, "How to make the form (once, about 10 minutes)"),
+      h("p", null, "1. Go to forms.office.com and make a new form, e.g. 'Computer skills check results'."),
+      h("p", null, "2. Add a Text question for each column you want, in any order. Use these titles: Name, Student number, ESOL teacher, Level, Class, Date, Minutes, Score, Percent, Result, Mouse and screen, Keyboard, Internet, Email, Files, Staying safe, Details. Turn on 'Long answer' for Details."),
+      h("p", null, "3. In Settings, choose who can respond. 'Anyone can respond' lets students at home send without signing in."),
+      h("p", null, "4. Click '…' (top right), then 'Get pre-filled URL'. In each box type the matching placeholder word in capitals: NAME, NUMBER, TEACHER, LEVEL, CLASS, DATE, MINUTES, SCORE, PERCENT, RESULT, MOUSE, KEYBOARD, INTERNET, EMAIL, FILES, SAFETY, DETAILS."),
+      h("p", null, "5. Click 'Get pre-filled URL', copy the link and paste it in the box above."),
+      h("p", null, "6. To see results in Excel: in the form, open Responses, then 'Open results in Excel'. The sheet is saved in your OneDrive and updates as students submit. You can share it with other teachers.")),
     h("h3", null, "Sections"), h("div", {class:"tgrid"}, boxes.map(b => b.el)),
     h("h3", null, "Your class link"), out, st,
     h("div", {class:"actions"},
@@ -1164,7 +1150,7 @@ function teacherScreen(){
 
   // Collator
   app.append(h("h2", {style:"margin-top:32px"}, "Results sheet"),
-    h("p", null, "Paste results from emails, Teams messages, downloaded files or a Forms export. Any line with a results code is read; everything else is ignored."));
+    h("p", null, "For results sent by email, Teams or a downloaded file. Paste them here and any results codes are put into a table."));
   const paste = h("textarea", {class:"field", rows:"6", "aria-label":"Paste results here", placeholder:"ICTv3|Fatima Ali|12345678|…"});
   const tableBox = h("div", {class:"overflow"});
   let rows = [];
@@ -1191,7 +1177,7 @@ function teacherScreen(){
     const taskIds = TASKS.map(t => t.id).filter(id => rows.some(r => r.tasks[id] !== undefined));
     tableBox.append(h("p", null, h("b", null, rows.length + " student" + (rows.length > 1 ? "s" : ""))),
       h("table", {class:"coll"},
-        h("thead", null, h("tr", null, ["Name","Student no.","Level / class","Teacher","Date","Mins","Score","%","Result"].map(x => h("th", null, x)),
+        h("thead", null, h("tr", null, ["Name","Student no.","Level","Teacher","Date","Mins","Score","%","Result"].map(x => h("th", null, x)),
           secKeys.map(k => h("th", null, SECTIONS.find(s => s.key === k).name)), taskIds.map(id => h("th", null, id)))),
         h("tbody", null, rows.map(r => h("tr", null,
           [r.name, r.id, r.cls, r.teacher, r.date, r.mins, r.got + "/" + r.of, r.pct, r.band].map(x => h("td", null, x)),
@@ -1199,7 +1185,7 @@ function teacherScreen(){
           taskIds.map(id => h("td", null, r.tasks[id] === "1" ? "✓" : r.tasks[id] === "0" ? "✗" : r.tasks[id] === "s" ? "😕" : "")))))));
     const csv = () => {
       const esc = v => /[",\n]/.test(String(v)) ? '"' + String(v).replace(/"/g, '""') + '"' : String(v);
-      const head = ["Name","Student number","Level / class","Teacher","Date","Minutes","Score","Out of","Percent","Result"].concat(secKeys.map(k => SECTIONS.find(s => s.key === k).name), taskIds.map(id => id + " " + TASKS.find(t => t.id === id).title));
+      const head = ["Name","Student number","Level","Teacher","Date","Minutes","Score","Out of","Percent","Result"].concat(secKeys.map(k => SECTIONS.find(s => s.key === k).name), taskIds.map(id => id + " " + TASKS.find(t => t.id === id).title));
       const body = rows.map(r => [r.name, r.id, r.cls, r.teacher, r.date, r.mins, r.got, r.of, r.pct, r.band].concat(secKeys.map(k => r.secs[k] || ""), taskIds.map(id => r.tasks[id] === "1" ? 1 : r.tasks[id] === "0" ? 0 : r.tasks[id] === "s" ? "didn't understand" : "")));
       return [head].concat(body).map(row => row.map(esc).join(",")).join("\r\n");
     };
