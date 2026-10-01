@@ -150,6 +150,18 @@ table.hours td, table.hours th{ border:1px solid var(--rule); padding:6px 10px; 
 .choice-line{ display:flex; align-items:center; gap:10px; margin:6px 0; }
 .choice-line input{ width:24px; height:24px; }
 
+.laststep{ margin-top:22px; border:3px solid var(--ok); border-radius:8px; padding:18px 20px; background:var(--ok-soft); }
+.laststep h2{ margin:0 0 14px; }
+.step{ display:flex; gap:14px; align-items:flex-start; margin:0 0 18px; }
+.step:last-child{ margin-bottom:0; }
+.stepnum{ flex:none; width:40px; height:40px; border-radius:50%; background:var(--ok); color:#fff; font-weight:700; display:flex; align-items:center; justify-content:center; font-size:1.1em; }
+.step p{ margin:0 0 8px; }
+.msform{ background:#fff; border:1px solid #C8C6C4; border-radius:6px; padding:14px 16px; max-width:420px; font-family:"Segoe UI", Arial, sans-serif; }
+.msform-q{ display:flex; flex-direction:column; gap:6px; font-size:.85em; color:#323130; padding-bottom:14px; border-bottom:1px dashed #C8C6C4; }
+.msform-box{ border-bottom:1px solid #8A8886; padding:4px 2px; color:#605E5C; }
+.msform-foot{ display:flex; align-items:center; gap:14px; padding-top:14px; flex-wrap:wrap; }
+.msform-submit{ display:inline-block; background:#0F6CBD; color:#fff; font-weight:600; padding:8px 22px; border-radius:4px; font-size:.95em; outline:4px solid var(--focus); outline-offset:3px; }
+.msform-point{ font-weight:700; font-size:1.05em; }
 /* Results */
 .sec-res{ display:grid; grid-template-columns:1fr auto; gap:4px 16px; border-top:1px solid var(--rule); padding-top:12px; }
 .sec-res div{ padding:6px 0; border-bottom:1px solid var(--rule); }
@@ -852,7 +864,7 @@ function startScreen(){
   aboutScreen();
 }
 
-/* About you: name, number, ESOL teacher, level, class */
+/* About you: name, number, level */
 /* Page 1: the student types the teacher's name from the board. */
 let chosenTeacher = null;
 function savedTeacher(){
@@ -932,7 +944,7 @@ function aboutScreen(){
     h("label", {class:"lab", for:"sn"}, "Your full name"), nm,
     h("label", {class:"lab", for:"si"}, "Student number"), id,
     h("label", {class:"lab", for:"sl"}, "Level"), lv,
-    h("div", {class:"nav"}, h("span", {class:"muted"}, "Teacher: " + T.name + " ", change), go)].filter(Boolean));
+    h("div", {class:"nav"}, h("span", {class:"muted"}, "Test teacher: " + T.name + " ", change), go)].filter(Boolean));
   err("nm", nm); err("id", id); err("lv", lv);
   setTimeout(() => nm.focus(), 50);
 }
@@ -992,7 +1004,7 @@ function resultCode(R){
 function resultText(R){
   const lines = [
     "Computer skills check – results", "",
-    "Name: " + S.name, "Student number: " + S.id, "ESOL teacher: " + (S.teacher || "-"), "Level: " + (S.cls || "-"),
+    "Name: " + S.name, "Student number: " + S.id, "Digital skills assessment teacher: " + (S.teacher || "-"), "Level: " + (S.cls || "-"),
     "Date: " + stamp(new Date(S.finished)), "Time taken: " + R.mins + " minutes", "",
     "Total: " + R.got + " / " + R.of + " (" + R.pct + "%)", "Result: " + R.band.name, ""
   ];
@@ -1025,13 +1037,20 @@ function finish(){
   const done = (text) => { status.classList.remove("hidden"); status.className = "msg ok"; status.textContent = text; };
   const acts = h("div", {class:"actions"});
   if (CFG.form){
-    const last = h("div", {class:"note", style:"margin-top:22px"},
-      h("p", {style:"font-size:1.15em"}, h("b", null, S.formSent ? "Did you click Submit?" : "Last step: send your results to your teacher.")),
-      h("p", null, "1. Click the green button."), h("p", null, "2. Your results are already in the form. Click Submit."),
-      h("p", {style:"margin-top:12px"}, h("button", {class:"btn go", type:"button", style:"font-size:1.1em;padding:14px 28px", onclick: () => {
-        S.formSent = true; save();
-        location.href = fillForm(CFG.form, R, code);
-      }}, "📨 Send to my teacher")));
+    const step = (n, kids) => h("div", {class:"step"}, h("span", {class:"stepnum", "aria-hidden":"true"}, n), h("div", null, kids));
+    const last = h("div", {class:"laststep"},
+      h("h2", null, S.formSent ? "Did you click Submit? Do it again:" : "Last step: send your results to your teacher"),
+      step("1", [h("p", null, h("b", null, "Click this green button:")),
+        h("button", {class:"btn go", type:"button", style:"font-size:1.15em;padding:16px 30px", onclick: () => {
+          S.formSent = true; save();
+          location.href = fillForm(CFG.form, R, code);
+        }}, "📨 Submit to my teacher – click here")]),
+      step("2", [h("p", null, h("b", null, "A new page opens. Scroll down ⬇ to the bottom.")),
+        h("p", null, h("b", null, "Find this button and click it:")),
+        h("div", {class:"msform", role:"img", "aria-label":"Picture of the Submit button at the bottom of the form"},
+          h("div", {class:"msform-q"}, h("span", null, "Result"), h("span", {class:"msform-box"}, R.band.name)),
+          h("div", {class:"msform-foot"}, h("span", {class:"msform-submit"}, "Submit"), h("span", {class:"msform-point", "aria-hidden":"true"}, "👈 Click Submit")))]),
+      step("3", [h("p", null, h("b", null, "Wait for the message: "), "“Your response was submitted”. Then you are finished. ✓")]));
     app.append(last, h("h2", {style:"margin-top:24px"}, "Other ways to send"));
   } else {
     app.append(h("h2", {style:"margin-top:24px"}, "Send your results to your teacher"));
@@ -1137,9 +1156,9 @@ function teacherScreen(){
     h("p", {class:"muted"}, DEFAULT_FORM ? "A form is already built into this test. Only fill this in to use a different form." : "Students get a 'Send to my teacher' button. Their results fill in the form, they click Submit, and a new row appears in your Excel sheet."),
     h("details", null, h("summary", null, "How to make the form (once, about 10 minutes)"),
       h("p", null, "1. Go to forms.office.com and make a new form, e.g. 'Computer skills check results'."),
-      h("p", null, "2. Add a Text question for each column you want, in any order. Use these titles: Name, Student number, ESOL teacher, Level, Class, Date, Minutes, Score, Percent, Result, Mouse and screen, Keyboard, Internet, Email, Files, Staying safe, Details. Turn on 'Long answer' for Details."),
+      h("p", null, "2. Add a Text question for each column you want, in any order. Use these titles: Name, Student number, Digital skills assessment teacher, Level, Date, Minutes, Score, Percent, Result, Mouse and screen, Keyboard, Internet, Email, Files, Staying safe, Details. Turn on 'Long answer' for Details."),
       h("p", null, "3. In Settings, choose who can respond. 'Anyone can respond' lets students at home send without signing in."),
-      h("p", null, "4. Click '…' (top right), then 'Get pre-filled URL'. In each box type the matching placeholder word in capitals: NAME, NUMBER, TEACHER, LEVEL, CLASS, DATE, MINUTES, SCORE, PERCENT, RESULT, MOUSE, KEYBOARD, INTERNET, EMAIL, FILES, SAFETY, DETAILS."),
+      h("p", null, "4. Click '…' (top right), then 'Get pre-filled URL'. In each box type the matching placeholder word in capitals: NAME, NUMBER, TEACHER, LEVEL, DATE, MINUTES, SCORE, PERCENT, RESULT, MOUSE, KEYBOARD, INTERNET, EMAIL, FILES, SAFETY, DETAILS."),
       h("p", null, "5. Click 'Get pre-filled URL', copy the link and paste it in the box above."),
       h("p", null, "6. To see results in Excel: in the form, open Responses, then 'Open results in Excel'. The sheet is saved in your OneDrive and updates as students submit. You can share it with other teachers.")),
     h("h3", null, "Sections"), h("div", {class:"tgrid"}, boxes.map(b => b.el)),
@@ -1177,7 +1196,7 @@ function teacherScreen(){
     const taskIds = TASKS.map(t => t.id).filter(id => rows.some(r => r.tasks[id] !== undefined));
     tableBox.append(h("p", null, h("b", null, rows.length + " student" + (rows.length > 1 ? "s" : ""))),
       h("table", {class:"coll"},
-        h("thead", null, h("tr", null, ["Name","Student no.","Level","Teacher","Date","Mins","Score","%","Result"].map(x => h("th", null, x)),
+        h("thead", null, h("tr", null, ["Name","Student no.","Level","Assessment teacher","Date","Mins","Score","%","Result"].map(x => h("th", null, x)),
           secKeys.map(k => h("th", null, SECTIONS.find(s => s.key === k).name)), taskIds.map(id => h("th", null, id)))),
         h("tbody", null, rows.map(r => h("tr", null,
           [r.name, r.id, r.cls, r.teacher, r.date, r.mins, r.got + "/" + r.of, r.pct, r.band].map(x => h("td", null, x)),
@@ -1185,7 +1204,7 @@ function teacherScreen(){
           taskIds.map(id => h("td", null, r.tasks[id] === "1" ? "✓" : r.tasks[id] === "0" ? "✗" : r.tasks[id] === "s" ? "😕" : "")))))));
     const csv = () => {
       const esc = v => /[",\n]/.test(String(v)) ? '"' + String(v).replace(/"/g, '""') + '"' : String(v);
-      const head = ["Name","Student number","Level","Teacher","Date","Minutes","Score","Out of","Percent","Result"].concat(secKeys.map(k => SECTIONS.find(s => s.key === k).name), taskIds.map(id => id + " " + TASKS.find(t => t.id === id).title));
+      const head = ["Name","Student number","Level","Digital skills assessment teacher","Date","Minutes","Score","Out of","Percent","Result"].concat(secKeys.map(k => SECTIONS.find(s => s.key === k).name), taskIds.map(id => id + " " + TASKS.find(t => t.id === id).title));
       const body = rows.map(r => [r.name, r.id, r.cls, r.teacher, r.date, r.mins, r.got, r.of, r.pct, r.band].concat(secKeys.map(k => r.secs[k] || ""), taskIds.map(id => r.tasks[id] === "1" ? 1 : r.tasks[id] === "0" ? 0 : r.tasks[id] === "s" ? "didn't understand" : "")));
       return [head].concat(body).map(row => row.map(esc).join(",")).join("\r\n");
     };
