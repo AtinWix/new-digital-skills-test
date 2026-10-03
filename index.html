@@ -1,69 +1,67 @@
+
 <!DOCTYPE html>
 <html lang="en-GB">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Reading check – ESOL</title>
+<title>Computer skills check – ESOL</title>
 <style>
 :root{
   --paper:#EEF2F5; --sheet:#FFFFFF; --ink:#13233A; --soft:#4A5B70;
-  --line:#0B6E6E; --line-soft:#E0F1F0; --ok:#1E7B3C; --ok-soft:#E3F3E8;
-  --bad:#B42318; --bad-soft:#FBE7E5; --rule:#CBD5DF; --focus:#FFC83D;
+  --line:#7A2E6B; --line-soft:#F1E4EE; --ok:#1E7B3C; --ok-soft:#E3F3E8;
+  --bad:#B42318; --bad-soft:#FBE7E5; --rule:#CBD5DF; --focus:#FFC83D; --link:#1A4FB4;
   --base:19px;
   color-scheme: light;
 }
 body.big{ --base:23px; }
 *{ box-sizing:border-box; }
 html,body{ margin:0; }
-body{ font-family: Verdana, Tahoma, "Segoe UI", Arial, sans-serif; font-size:var(--base); line-height:1.55; color:var(--ink); background:var(--paper); }
+body{
+  font-family: Verdana, Tahoma, "Segoe UI", Arial, sans-serif;
+  font-size: var(--base); line-height:1.5; color:var(--ink); background:var(--paper);
+}
 button,input,select,textarea{ font:inherit; color:inherit; }
 :focus-visible{ outline:4px solid var(--focus); outline-offset:2px; }
+@media (prefers-reduced-motion: reduce){ *{ transition:none !important; animation:none !important; } }
 
+/* Header and route line */
 header{ background:var(--sheet); border-bottom:1px solid var(--rule); }
-.head-in{ max-width:1160px; margin:0 auto; padding:14px 20px 10px; }
+.head-in{ max-width:820px; margin:0 auto; padding:14px 20px 10px; }
 .head-top{ display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
 .brand{ font-weight:700; font-size:1.05em; margin:0; }
+.tools{ display:flex; gap:8px; }
 .tool{ background:none; border:2px solid var(--rule); border-radius:8px; padding:4px 10px; cursor:pointer; font-size:.8em; }
 .tool[aria-pressed="true"]{ border-color:var(--ink); background:var(--ink); color:#fff; }
-.route{ display:flex; margin:14px 0 4px; padding:0; list-style:none; }
+.route{ display:flex; margin:14px 0 4px; padding:0; list-style:none; position:relative; }
 .route li{ flex:1; text-align:center; position:relative; font-size:.62em; color:var(--soft); padding-top:24px; }
 .route li::before{ content:""; position:absolute; top:8px; left:0; right:0; height:6px; background:var(--rule); }
 .route li:first-child::before{ left:50%; } .route li:last-child::before{ right:50%; }
 .route li.done::before, .route li.now::before{ background:var(--line); }
 .route li.now::before{ right:50%; }
+.route li:last-child.now::before{ right:50%; }
 .route li span.stop{ position:absolute; top:2px; left:50%; transform:translateX(-50%); width:18px; height:18px; border-radius:50%; background:#fff; border:4px solid var(--rule); z-index:1; }
 .route li.done span.stop{ border-color:var(--line); background:var(--line); }
 .route li.now span.stop{ border-color:var(--line); width:24px; height:24px; top:-1px; }
 .route li.now{ color:var(--ink); font-weight:700; }
 .count{ font-size:.75em; color:var(--soft); margin:6px 0 0; }
 
-main{ max-width:1160px; margin:0 auto; padding:22px 20px 60px; }
-main.narrow{ max-width:820px; }
+/* Sheet */
+main{ max-width:820px; margin:0 auto; padding:22px 20px 60px; }
 .sheet{ background:var(--sheet); border:1px solid var(--rule); border-radius:6px; padding:26px 26px 22px; }
 h1{ font-size:1.5em; line-height:1.25; margin:0 0 10px; }
-h2{ font-size:1.2em; margin:0 0 8px; }
+h2{ font-size:1.25em; margin:0 0 6px; }
 h3{ font-size:1em; margin:20px 0 8px; }
 p{ margin:0 0 12px; }
-.ask{ font-size:1.1em; font-weight:700; margin:0 0 14px; }
-.quote{ border-left:6px solid var(--line); background:var(--line-soft); padding:8px 14px; border-radius:0 6px 6px 0; margin:0 0 14px; }
+.ask{ font-size:1.1em; margin:0 0 16px; }
 .muted{ color:var(--soft); font-size:.85em; }
+.copytext{ font-family: Consolas, "Courier New", monospace; font-size:1.25em; background:var(--paper); padding:4px 10px; border-radius:4px; display:inline-block; letter-spacing:.02em; }
 
-/* Reading layout: text on the left, question on the right */
-.read{ display:grid; grid-template-columns:1fr; gap:22px; }
-@media (min-width:940px){ .read{ grid-template-columns:minmax(0,1.05fr) minmax(0,1fr); align-items:start; } .read .text{ position:sticky; top:12px; } }
-.text{ border:2px solid #8A99AB; border-radius:8px; padding:18px 20px; background:#FFFDF6; }
-.text h2{ margin-bottom:10px; }
-.text p:last-child{ margin-bottom:0; }
-.text b.tw{ background:#FFE9A8; padding:0 3px; border-radius:3px; }
-.text.poster{ border:4px solid var(--line); text-align:center; }
-.text.poster .big{ font-size:1.25em; font-weight:700; color:var(--line); }
-.text.poster .box{ background:var(--line-soft); border-radius:6px; padding:10px; margin-bottom:12px; }
-.label{ font-size:.75em; font-weight:700; color:var(--soft); text-transform:uppercase; letter-spacing:.05em; margin:0 0 6px; }
-
+/* Controls */
 .field{ display:block; width:100%; border:2px solid #8A99AB; border-radius:6px; padding:12px; background:#fff; font-size:1em; }
 .field:focus{ border-color:var(--ink); }
 label.lab{ display:block; font-weight:700; margin:14px 0 6px; }
-.btn{ display:inline-flex; align-items:center; justify-content:center; gap:8px; border:2px solid var(--ink); background:var(--ink); color:#fff; border-radius:6px; padding:12px 22px; font-weight:700; cursor:pointer; min-height:52px; text-decoration:none; }
+.btn{ display:inline-flex; align-items:center; justify-content:center; gap:8px; border:2px solid var(--ink); background:var(--ink); color:#fff; border-radius:6px; padding:12px 22px; font-weight:700; cursor:pointer; min-height:52px; }
+.btn:disabled{ opacity:.45; cursor:not-allowed; }
 .btn.ghost{ background:#fff; color:var(--ink); }
 .btn.small{ min-height:40px; padding:6px 14px; font-size:.85em; }
 .btn.go{ background:var(--ok); border-color:var(--ok); }
@@ -72,48 +70,114 @@ label.lab{ display:block; font-weight:700; margin:14px 0 6px; }
 .dunno{ display:inline-flex; align-items:center; gap:10px; border:3px solid #C98A00; background:#FFF4D6; color:var(--ink); border-radius:6px; padding:10px 20px; font-weight:700; cursor:pointer; min-height:52px; }
 .dunno:hover{ background:#FFE9A8; }
 .dunno .em{ font-size:1.6em; line-height:1; }
-.err{ color:var(--bad); font-size:.8em; display:block; margin-top:4px; }
 
-.picks{ display:grid; grid-template-columns:1fr; gap:10px; }
-.picks.row{ grid-template-columns:repeat(auto-fit,minmax(120px,1fr)); }
-.pick{ border:3px solid var(--rule); background:#fff; border-radius:8px; padding:12px 14px; cursor:pointer; text-align:left; min-height:56px; display:flex; align-items:center; gap:12px; }
-.picks.row .pick{ flex-direction:column; justify-content:center; text-align:center; }
+.picks{ display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:12px; }
+.pick{ border:3px solid var(--rule); background:#fff; border-radius:8px; padding:16px 12px; cursor:pointer; text-align:center; min-height:64px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; }
 .pick:hover{ border-color:#8A99AB; }
-.pick[aria-pressed="true"]{ border-color:var(--line); background:var(--line-soft); font-weight:700; }
-.pick .em{ font-size:2.2em; line-height:1; }
-.pick .let{ flex:none; width:34px; height:34px; border-radius:50%; border:2px solid #8A99AB; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:.85em; }
-.pick[aria-pressed="true"] .let{ background:var(--line); border-color:var(--line); color:#fff; }
-
-/* Put in order: click the words one by one */
-.slots{ display:grid; gap:8px; margin-bottom:16px; }
-.slot{ display:flex; align-items:center; gap:10px; min-height:54px; border:3px dashed #8A99AB; border-radius:8px; padding:6px 10px; background:var(--paper); }
-.slot .num{ flex:none; width:34px; height:34px; border-radius:50%; background:var(--ink); color:#fff; font-weight:700; display:flex; align-items:center; justify-content:center; }
-.slot.full{ border-style:solid; border-color:var(--line); background:var(--line-soft); }
-.pool{ display:flex; flex-wrap:wrap; gap:10px; min-height:56px; }
-.chip{ border:3px solid var(--ink); background:#fff; border-radius:8px; padding:8px 16px; cursor:pointer; font-weight:700; min-height:48px; text-align:left; }
-.chip.placed{ border:none; background:none; padding:0; flex:1; font-weight:700; min-height:0; }
+.pick[aria-pressed="true"]{ border-color:var(--line); background:var(--line-soft); }
+.pick .em{ font-size:2.4em; line-height:1; }
+.picks.icons{ grid-template-columns:repeat(auto-fit,minmax(90px,1fr)); }
+.picks.icons .em{ font-size:2.6em; }
+.picks.list{ grid-template-columns:1fr; }
+.picks.list .pick{ text-align:left; align-items:flex-start; }
 
 .msg{ margin-top:14px; padding:10px 14px; border-radius:6px; background:var(--paper); }
 .msg.ok{ background:var(--ok-soft); color:var(--ok); font-weight:700; }
+.msg.bad{ background:var(--bad-soft); color:var(--bad); }
+
+/* Simulated desktop */
+.desk{ position:relative; background:#2F5D7C; border-radius:6px; min-height:260px; padding:18px; color:#fff; user-select:none; -webkit-user-select:none; overflow:hidden; }
+.dicon{ display:inline-flex; flex-direction:column; align-items:center; width:110px; padding:8px; border:2px solid transparent; border-radius:6px; background:none; color:#fff; cursor:default; touch-action:manipulation; }
+.dicon .em{ font-size:3em; line-height:1.1; }
+.dicon.sel{ background:rgba(255,255,255,.25); border-color:rgba(255,255,255,.6); }
+.win{ background:#fff; color:var(--ink); border-radius:6px; overflow:hidden; }
+.win-bar{ background:#DDE4EB; padding:6px 12px; font-weight:700; font-size:.85em; }
+.win-body{ padding:14px; }
+.drag{ position:absolute; touch-action:none; cursor:grab; }
+.drag.lift{ cursor:grabbing; z-index:5; filter:drop-shadow(0 6px 8px rgba(0,0,0,.4)); }
+.target.hot{ background:rgba(255,255,255,.35); border-color:#fff; }
+.ctx{ position:absolute; background:#fff; color:var(--ink); border:1px solid #8A99AB; border-radius:4px; box-shadow:0 4px 14px rgba(0,0,0,.3); min-width:160px; z-index:9; padding:4px 0; }
+.ctx button{ display:block; width:100%; text-align:left; background:none; border:none; padding:8px 16px; cursor:pointer; }
+.ctx button:hover, .ctx button:focus{ background:#E5ECF3; }
+.scrollbox{ height:230px; overflow-y:auto; border:2px solid #8A99AB; border-radius:6px; padding:14px; background:#fff; }
+
+/* Simulated browser */
+.browser{ border:2px solid #8A99AB; border-radius:8px; overflow:hidden; background:#fff; }
+.bbar{ display:flex; align-items:center; gap:8px; background:#E4E9EE; padding:8px; }
+.bbar .navb{ font-size:1.1em; color:#6A7A8C; padding:0 4px; user-select:none; }
+.bbar input{ flex:1; border:1px solid #9AA8B7; border-radius:999px; padding:8px 14px; background:#fff; min-width:0; }
+.bpage{ padding:18px; min-height:180px; }
+.slogo{ font-size:1.8em; font-weight:700; text-align:center; color:var(--line); margin:10px 0 14px; }
+.srow{ display:flex; gap:8px; max-width:520px; margin:0 auto; }
+.srow input{ flex:1; border:2px solid #9AA8B7; border-radius:999px; padding:10px 16px; min-width:0; }
+.srow button{ border:2px solid #9AA8B7; background:#fff; border-radius:999px; padding:0 16px; cursor:pointer; font-size:1.1em; }
+.res{ display:block; width:100%; text-align:left; background:#fff; border:3px solid transparent; border-radius:6px; padding:10px; cursor:pointer; margin-bottom:6px; }
+.res[aria-pressed="true"]{ border-color:var(--line); background:var(--line-soft); }
+.res .t{ color:var(--link); text-decoration:underline; font-size:1.05em; display:block; }
+.res .u{ color:#1E6B34; font-size:.8em; display:block; }
+.res .d{ color:var(--soft); font-size:.8em; display:block; }
+.spons{ font-weight:700; font-size:.75em; color:var(--ink); }
+table.hours{ border-collapse:collapse; width:100%; max-width:420px; }
+table.hours td, table.hours th{ border:1px solid var(--rule); padding:6px 10px; text-align:left; }
+.addr{ display:flex; gap:8px; align-items:center; font-family:Consolas,"Courier New",monospace; font-size:.85em; background:#E4E9EE; border-radius:999px; padding:8px 14px; width:100%; word-break:break-all; }
+.notsec{ color:var(--bad); font-family:Verdana,Tahoma,sans-serif; font-weight:700; font-size:.9em; }
+
+/* Simulated email */
+.mail{ border:2px solid #8A99AB; border-radius:8px; overflow:hidden; background:#fff; }
+.mail-top{ background:#1F4E79; color:#fff; padding:8px 14px; font-weight:700; font-size:.9em; display:flex; justify-content:space-between; align-items:center; gap:8px; }
+.mail-grid{ display:grid; grid-template-columns:minmax(200px,38%) 1fr; min-height:260px; }
+@media (max-width:640px){ .mail-grid{ grid-template-columns:1fr; } }
+.inbox{ border-right:1px solid var(--rule); }
+.mitem{ display:block; width:100%; text-align:left; background:#fff; border:none; border-bottom:1px solid var(--rule); padding:10px 12px; cursor:pointer; font-size:.82em; }
+.mitem b{ display:block; }
+.mitem[aria-pressed="true"]{ background:var(--line-soft); box-shadow:inset 5px 0 0 var(--line); }
+.mread{ padding:14px; font-size:.9em; }
+.mrow{ display:flex; align-items:center; gap:8px; border-bottom:1px solid var(--rule); padding:6px 0; }
+.mrow span{ width:80px; color:var(--soft); font-size:.85em; flex:none; }
+.mrow input{ flex:1; border:2px solid #8A99AB; border-radius:4px; padding:8px 10px; min-width:0; background:#fff; cursor:text; }
+.mrow input:focus{ border-color:var(--ink); }
+.mrow input[readonly]{ background:var(--paper); border-color:var(--rule); cursor:default; }
+.note{ border-left:6px solid var(--line); background:var(--line-soft); padding:10px 14px; border-radius:0 6px 6px 0; margin-bottom:14px; }
+.note p{ margin:0 0 4px; }
+.chip{ display:inline-flex; gap:8px; align-items:center; background:var(--paper); border:1px solid var(--rule); border-radius:999px; padding:4px 12px; font-size:.85em; margin-top:8px; }
+.modal-back{ position:fixed; inset:0; background:rgba(19,35,58,.5); display:flex; align-items:center; justify-content:center; z-index:50; padding:16px; }
+.modal{ background:#fff; border-radius:8px; width:min(460px,100%); overflow:hidden; }
+.modal .win-body .pick{ flex-direction:row; justify-content:flex-start; min-height:48px; padding:8px 12px; }
+
+/* Online form */
+.oform{ border:2px solid #8A99AB; border-radius:8px; padding:18px; }
+.oform select{ border:2px solid #8A99AB; border-radius:6px; padding:8px; background:#fff; margin-right:6px; margin-bottom:6px; }
+.err{ color:var(--bad); font-size:.8em; display:block; margin-top:4px; }
+.choice-line{ display:flex; align-items:center; gap:10px; margin:6px 0; }
+.choice-line input{ width:24px; height:24px; }
 
 .laststep{ margin-top:22px; border:3px solid var(--ok); border-radius:8px; padding:18px 20px; background:var(--ok-soft); }
+.laststep h2{ margin:0 0 14px; }
 .step{ display:flex; gap:14px; align-items:flex-start; margin:0 0 18px; }
 .step:last-child{ margin-bottom:0; }
-.stepnum{ flex:none; width:40px; height:40px; border-radius:50%; background:var(--ok); color:#fff; font-weight:700; display:flex; align-items:center; justify-content:center; }
+.stepnum{ flex:none; width:40px; height:40px; border-radius:50%; background:var(--ok); color:#fff; font-weight:700; display:flex; align-items:center; justify-content:center; font-size:1.1em; }
 .step p{ margin:0 0 8px; }
-.subm{ display:inline-block; background:#0F6CBD; color:#fff; font-weight:600; padding:8px 22px; border-radius:4px; outline:4px solid var(--focus); outline-offset:3px; font-family:"Segoe UI",Arial,sans-serif; }
-
+.msform{ background:#fff; border:1px solid #C8C6C4; border-radius:6px; padding:14px 16px; max-width:420px; font-family:"Segoe UI", Arial, sans-serif; }
+.msform-q{ display:flex; flex-direction:column; gap:6px; font-size:.85em; color:#323130; padding-bottom:14px; border-bottom:1px dashed #C8C6C4; }
+.msform-box{ border-bottom:1px solid #8A8886; padding:4px 2px; color:#605E5C; }
+.msform-foot{ display:flex; align-items:center; gap:14px; padding-top:14px; flex-wrap:wrap; }
+.msform-submit{ display:inline-block; background:#0F6CBD; color:#fff; font-weight:600; padding:8px 22px; border-radius:4px; font-size:.95em; outline:4px solid var(--focus); outline-offset:3px; }
+.msform-point{ font-weight:700; font-size:1.05em; }
+/* Results */
 .sec-res{ display:grid; grid-template-columns:1fr auto; gap:4px 16px; border-top:1px solid var(--rule); padding-top:12px; }
 .sec-res div{ padding:6px 0; border-bottom:1px solid var(--rule); }
 .bar{ height:10px; background:var(--rule); border-radius:5px; overflow:hidden; margin-top:4px; }
 .bar i{ display:block; height:100%; background:var(--line); }
-.band{ font-size:1.3em; font-weight:700; color:var(--line); }
+.band{ font-size:1.2em; font-weight:700; color:var(--line); }
 details{ margin-top:16px; }
 summary{ cursor:pointer; font-weight:700; }
 table.det{ border-collapse:collapse; width:100%; font-size:.8em; margin-top:8px; }
 table.det td, table.det th{ border-bottom:1px solid var(--rule); padding:6px; text-align:left; }
 .actions{ display:flex; flex-wrap:wrap; gap:10px; margin:16px 0; }
 .code{ width:100%; font-family:Consolas,"Courier New",monospace; font-size:.7em; border:2px dashed #8A99AB; border-radius:6px; padding:10px; background:var(--paper); }
+
+/* Teacher area */
+.tgrid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:6px 16px; }
 .overflow{ overflow-x:auto; }
 table.coll{ border-collapse:collapse; font-size:.72em; min-width:100%; }
 table.coll th, table.coll td{ border:1px solid var(--rule); padding:4px 8px; white-space:nowrap; }
@@ -125,14 +189,16 @@ table.coll th{ background:var(--paper); }
 <header>
   <div class="head-in">
     <div class="head-top">
-      <p class="brand" id="brand">Reading check</p>
-      <button class="tool" id="bigBtn" aria-pressed="false">Bigger text</button>
+      <p class="brand" id="brand">Computer skills check</p>
+      <div class="tools">
+        <button class="tool" id="bigBtn" aria-pressed="false">Bigger text</button>
+      </div>
     </div>
-    <ol class="route hidden" id="route" aria-label="Test parts"></ol>
+    <ol class="route hidden" id="route" aria-label="Test sections"></ol>
     <p class="count hidden" id="count"></p>
   </div>
 </header>
-<main id="main" class="narrow"><div class="sheet" id="app" aria-live="polite"></div></main>
+<main><div class="sheet" id="app" aria-live="polite"></div></main>
 
 <script>
 (function(){
@@ -140,21 +206,26 @@ table.coll th{ background:var(--paper); }
 
 /* ---------- Settings from the link ----------
    ?tl=Atin|atin@x;Barry|barry@x   teachers students can choose (email optional)
+   &t=teacher@email   (older links) single teacher email
+   &c=E2A             class name
    &f=FORMLINK        pre-filled Microsoft Form link (overrides DEFAULT_FORM below)
+   &s=UKICFS          sections to include (any order/subset)
    ?mode=teacher      opens the teacher setup page                                  */
-/* Paste your Microsoft Form pre-filled link between the quotes. Every student link then uses it.
-   Placeholder words: NAME NUMBER EMAIL TEACHER RESULT SCORE DATE MINUTES PART1 PART2 PART3 PART4 DETAILS CODE */
-const DEFAULT_FORM = "https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=mUft038080m159qCPJXo2Y1qZCuioLZMr502V7pP7tRUMEdWVVFNMzJFQ1JIQ1k0M0hWREZWVFZCVCQlQCNjPTEu&ra3cc52ae57554be3b58eab2784f9484b=NAME&rc7755d6aab77402787a3d9dcd7dfa914=EMAIL&ra3ff38e9da894395b81027ba36d48acd=NUMBER&r5b1587f25b734fcd81649ff67c41be32=TEACHER&ra6fa3be9e26f4e45890b645010bafadb=SCORE&r81ddab9b551b447fb668a6c23d6a4af6=RESULT";
-const PASS = 5;          // marks out of 7 needed to move on to the next part
+/* Paste your Microsoft Form pre-filled link between the quotes. Every student link then uses it. */
+const DEFAULT_FORM = "https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=mUft038080m159qCPJXo2Y1qZCuioLZMr502V7pP7tRUN0hDTUZZQlhFUTRETU5RT1dEVzZMNlFOWSQlQCNjPTEu&ra3cc52ae57554be3b58eab2784f9484b=NAME&ra3ff38e9da894395b81027ba36d48acd=NUMBER&r5b1587f25b734fcd81649ff67c41be32=TEACHER&r0fa48ae72ace4d698a728e55812f11c2=%22LEVEL%22&ra6fa3be9e26f4e45890b645010bafadb=SCORE&r81ddab9b551b447fb668a6c23d6a4af6=RESULT";
+/* Level wording as it appears in the form's choice options, where it differs from the test */
+const FORM_LEVELS = {};
 const Q = new URLSearchParams(location.search);
 const CFG = {
   teacher: (Q.get("t") || "").trim(),
   teachers: (Q.get("tl") || "").split(";").map(x => { const [n, e] = x.split("|"); return {name:(n || "").trim(), email:(e || "").trim()}; }).filter(x => x.name),
+  cls: (Q.get("c") || "").trim(),
   form: (Q.get("f") || DEFAULT_FORM).trim(),
+  secs: (Q.get("s") || "UKICFS").toUpperCase(),
   mode: Q.get("mode") || ""
 };
-const STORE = "readCheck_v1";
-const VERSION = "RDv1";
+const STORE = "ictCheck_v3";
+const VERSION = "ICTv3";
 
 /* ---------- Helpers ---------- */
 function h(tag, attrs, ...kids){
@@ -175,9 +246,17 @@ function h(tag, attrs, ...kids){
   return el;
 }
 const $ = id => document.getElementById(id);
+const norm = s => (s || "").toLowerCase().replace(/[^a-z0-9@.]/g, "");
+const lettersOnly = s => (s || "").toLowerCase().replace(/[^a-z]/g, "");
 function load(){ try { return JSON.parse(localStorage.getItem(STORE)) || null; } catch(e){ return null; } }
 function save(){ try { localStorage.setItem(STORE, JSON.stringify(S)); } catch(e){} }
 function clearSave(){ try { localStorage.removeItem(STORE); } catch(e){} }
+function msg(box, text, kind){
+  let m = box.querySelector(":scope > .msg");
+  if (!m){ m = h("div", {class:"msg"}); box.append(m); }
+  m.className = "msg" + (kind ? " " + kind : "");
+  m.textContent = text;
+}
 function copyText(text, onDone){
   const fallback = () => {
     const ta = h("textarea", {style:"position:fixed;left:-9999px"}); ta.value = text;
@@ -185,8 +264,9 @@ function copyText(text, onDone){
     let ok = false; try { ok = document.execCommand("copy"); } catch(e){}
     ta.remove(); onDone(ok);
   };
-  if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(text).then(() => onDone(true), fallback);
-  else fallback();
+  if (navigator.clipboard && window.isSecureContext){
+    navigator.clipboard.writeText(text).then(() => onDone(true), fallback);
+  } else fallback();
 }
 function download(name, text, type){
   const blob = new Blob([text], {type: type || "text/plain"});
@@ -198,110 +278,585 @@ function stamp(d){
   const p = n => String(n).padStart(2, "0");
   return d.getFullYear()+"-"+p(d.getMonth()+1)+"-"+p(d.getDate())+" "+p(d.getHours())+":"+p(d.getMinutes());
 }
-function tidyName(v){
-  return (v || "").replace(/[|;]/g, " ").replace(/\s+/g, " ").trim().toLocaleLowerCase("en-GB")
-    .replace(/(^|[\s\-'’])(\p{L})/gu, (m, a, b) => a + b.toLocaleUpperCase("en-GB"));
-}
 
-/* ---------- The test: 4 parts, 7 questions each ----------
-   type "pick":  ask, opts (text, or {em,label} for pictures), ans = number of the correct option (0 = first)
-   type "order": ask, items (as shown), ans (correct order)
-   quote: a sentence from the text shown above the options                               */
-const STAGES = [
-{ key:"A", level:"Entry 1", kind:"", html:
-  `<h2>My college</h2>
-   <p>My name is Sara. I am from Sudan. I live in Hackney with my sister.</p>
-   <p>I go to college on Monday and Wednesday. My class starts at 9 o'clock. I go to college by bus.</p>
-   <p>My teacher is Tom. <b class="tw">He</b> is very kind. I like my class.</p>`,
-  qs:[
-    {title:"Find information", ask:"Where is Sara from?", opts:["Hackney","Sudan","Somalia"], ans:1},
-    {title:"True or false", ask:"Sara lives with her brother.", opts:[{em:"✅",label:"True"},{em:"❌",label:"False"}], ans:1, row:true},
-    {title:"Find information", ask:"How does Sara go to college?", opts:[{em:"🚆",label:"Train"},{em:"🚶",label:"Walk"},{em:"🚌",label:"Bus"}], ans:2, row:true},
-    {title:"Who is it?", ask:"Who is “He”?", quote:"He is very kind.", opts:["Tom","Sara","Sara's sister"], ans:0},
-    {title:"Find information", ask:"What time does the class start?", opts:[{em:"🕖",label:"7:00"},{em:"🕘",label:"9:00"},{em:"🕙",label:"10:00"}], ans:1, row:true},
-    {title:"True or false", ask:"Sara is happy in her class.", opts:[{em:"✅",label:"True"},{em:"❌",label:"False"}], ans:0, row:true},
-    {title:"ABC order", type:"order", ask:"Put the words in ABC order. Click the first word, then the next word.", items:["sister","bus","teacher","class"], ans:["bus","class","sister","teacher"]}
-  ]},
-{ key:"B", level:"Entry 2", kind:"poster", html:
-  `<p class="big">Hackney Community Kitchen</p>
-   <h2>Free cooking class for adults</h2>
-   <p>Do you want to cook healthy food for your family? Come to our class!</p>
-   <div class="box"><b>When:</b> every Thursday, 10am to 12pm<br><b>Where:</b> 25 Well Street</div>
-   <p>In the class you learn to cook <b class="tw">cheap</b> and easy meals. After the class, we eat lunch together.</p>
-   <p>You do not need to bring food. We give you everything. Please bring a box to take food home.</p>
-   <p>Sorry, children cannot come to the class.</p>
-   <p>To book a place, call Maria on 020 7946 0123 or visit the kitchen. <b class="tw">She</b> is there every morning.</p>`,
-  qs:[
-    {title:"What is it about?", ask:"What is the text about?", opts:["a new restaurant","a job in a kitchen","a cooking lesson"], ans:2},
-    {title:"What kind of text?", ask:"The text is", opts:["a poster","an email","a story"], ans:0},
-    {title:"Find information", ask:"How much do you pay for the class?", opts:["£10","nothing","£25"], ans:1},
-    {title:"Who is it?", ask:"Who is “She”?", quote:"She is there every morning.", opts:["a student","a child","Maria"], ans:2},
-    {title:"Word meaning", ask:"What does “cheap” mean?", opts:["It does not cost a lot of money.","It is very quick.","It tastes good."], ans:0},
-    {title:"Find information", ask:"What do you need to take to the class?", opts:["some food","a box","your children"], ans:1},
-    {title:"Put in order", type:"order", ask:"What happens first? Put the four things in order. Click them one by one.", items:["Eat lunch together","Book a place","Take food home","Cook a meal"], ans:["Book a place","Cook a meal","Eat lunch together","Take food home"]}
-  ]},
-{ key:"C", level:"Entry 3", kind:"", html:
-  `<h2>Ridley Road Market</h2>
-   <p>Ridley Road Market in Dalston is one of the oldest street markets in East London. It opened in the 1880s with about 20 stalls. Today there are more than 150.</p>
-   <p>The market is open from Monday to Saturday. Saturday is the busiest day, so it is better to visit during the week if you do not like <b class="tw">crowds</b>.</p>
-   <p>People come here because the prices are low and the food comes from all over the world. You can buy fresh fruit, vegetables, fish and spices, as well as clothes and things for the home.</p>
-   <p>Yusuf Demir has sold fruit at the market for 25 years. “My father started this stall,” he says. “I helped <b class="tw">him</b> when I was a boy. Now my daughter helps me on Saturdays.”</p>
-   <p>Many traders worry about the future because rents in the area are rising. However, Yusuf is hopeful. “Local people love this market,” he says. “They will keep coming.”</p>`,
-  qs:[
-    {title:"Main idea", ask:"The text is about", opts:["how to open a shop","the history of Dalston","a market and the people who work there","cooking food from different countries"], ans:2},
-    {title:"Who is it?", ask:"Who is “him”?", quote:"I helped him when I was a boy.", opts:["Yusuf's father","Yusuf's son","a customer","Yusuf"], ans:0},
-    {title:"Word meaning", ask:"What does “crowds” mean?", opts:["high prices","bad weather","loud music","large numbers of people"], ans:3},
-    {title:"Purpose", ask:"The text was written to", opts:["give instructions","describe a place","sell something","say sorry"], ans:1},
-    {title:"Find information", ask:"Why do many people shop at the market?", opts:["It is open every day.","It is very quiet.","Things are not expensive.","It is new."], ans:2},
-    {title:"Find information", ask:"Which sentence is true?", opts:["The market is open on Sundays.","The market is bigger now than when it started.","Yusuf started the fruit stall.","Yusuf thinks the market will close."], ans:1},
-    {title:"Alphabetical order", type:"order", ask:"Put the words in alphabetical order. Click the first word, then the next word.", items:["food","fruit","father","fish"], ans:["father","fish","food","fruit"]}
-  ]},
-{ key:"D", level:"Level 1", kind:"", html:
-  `<h2>Why volunteer?</h2>
-   <p>Every year, millions of people in the UK give up their free time to work without pay. They serve meals at food banks, coach children's football teams and keep elderly neighbours company. But what do volunteers themselves gain from it?</p>
-   <p>According to a recent survey by a national charity, the benefits are considerable. Three quarters of volunteers said that it had improved their mental health, and many reported feeling less <b class="tw">isolated</b>. For people who are new to an area, it can be an effective way of meeting neighbours and practising English in a relaxed setting.</p>
-   <p>Volunteering may also improve your chances of finding work. Employers often value the experience, particularly when an applicant has few formal qualifications. Amina Yusuf, who now manages a café in Tottenham, began as a volunteer in a community kitchen. “I had never worked in the UK,” she explains. “Volunteering gave me a reference and, more importantly, the confidence to apply for jobs.”</p>
-   <p>However, volunteering is not always straightforward. Some organisations ask for a regular commitment, which can be difficult for people with young children or unpredictable working hours. Others require background checks that take several weeks to complete.</p>
-   <p>Despite <b class="tw">these obstacles</b>, most volunteers say they would recommend it. As Amina puts it, “You give a few hours, but you get much more back.”</p>`,
-  qs:[
-    {title:"Purpose", ask:"What is the main purpose of the text?", opts:["to advertise jobs at a café","to explain the advantages and difficulties of volunteering","to persuade employers to hire volunteers","to complain about background checks"], ans:1},
-    {title:"True, false or not given", ask:"Most volunteers in the survey said volunteering was good for their mental health.", opts:["True","False","Not given (the text does not say)"], ans:0},
-    {title:"True, false or not given", ask:"Amina has young children.", opts:["True","False","Not given (the text does not say)"], ans:2},
-    {title:"Word meaning", ask:"What does “isolated” mean?", opts:["worried about money","physically tired","bored at work","alone, without contact with other people"], ans:3},
-    {title:"Find information", ask:"For Amina, what was the biggest benefit of volunteering?", opts:["She got a reference.","She gained a qualification.","She started to believe in herself.","She earned a salary."], ans:2},
-    {title:"Find information", ask:"Who may find it hard to volunteer every week?", opts:["people whose work times often change","people with few qualifications","people who are new to an area","elderly neighbours"], ans:0},
-    {title:"Language", ask:"What are “these obstacles”?", quote:"Despite these obstacles, most volunteers say they would recommend it.", opts:["the survey results","mental health problems","having few qualifications","the regular commitment and the background checks"], ans:3}
-  ]}
+/* A set of picture/text choices; result stored in t.picked */
+function choices(box, t, opts, cls){
+  const wrap = h("div", {class:"picks " + (cls || ""), role:"group"});
+  opts.forEach((o, i) => {
+    const b = h("button", {class:"pick", type:"button", "aria-pressed":"false", "aria-label": o.aria || null,
+      onclick: () => {
+        wrap.querySelectorAll(".pick").forEach(x => x.setAttribute("aria-pressed", "false"));
+        b.setAttribute("aria-pressed", "true"); t.picked = i;
+      }});
+    if (o.em) b.append(h("span", {class:"em", "aria-hidden":"true"}, o.em));
+    if (o.node) b.append(o.node); else if (o.label) b.append(h("span", null, o.label));
+    wrap.append(b);
+  });
+  box.append(wrap);
+  return wrap;
+}
+const pickTask = (correct) => ({ check: t => t.picked === correct, note: t => t.picked === undefined ? "no answer" : "" });
+
+/* ---------- Sections and tasks ---------- */
+const SECTIONS = [
+  {key:"U", name:"Mouse and screen"},
+  {key:"K", name:"Keyboard"},
+  {key:"I", name:"Internet"},
+  {key:"C", name:"Email"},
+  {key:"F", name:"Files"},
+  {key:"S", name:"Staying safe"}
 ];
-const TASKS = [];
-STAGES.forEach((st, si) => st.qs.forEach((q, qi) => TASKS.push(Object.assign({id: st.key + (qi + 1), st: si, n: qi}, q))));
+
+const TASKS = [
+/* ===== Mouse and screen ===== */
+{ id:"U1", sec:"U", title:"Click a picture",
+  ask:"Click the computer.",
+  build(box, t){
+    choices(box, t, [{em:"📱",label:"Phone"},{em:"💻",label:"Computer"},{em:"🚗",label:"Car"},{em:"📺",label:"TV"}]);
+  }, ...pickTask(1) },
+
+{ id:"U2", sec:"U", title:"Double-click",
+  ask:"Double-click the folder to open it.",
+  build(box, t){
+    const desk = h("div", {class:"desk"});
+    let last = 0;
+    const open = () => {
+      if (t.ok) return; t.ok = true;
+      desk.innerHTML = "";
+      desk.append(h("div", {class:"win"},
+        h("div", {class:"win-bar"}, "📂 Photos"),
+        h("div", {class:"win-body"}, h("span", {style:"font-size:2em"}, "🖼️ 🖼️ 🖼️"), h("p", null, "The folder is open."))));
+    };
+    const f = h("button", {class:"dicon", type:"button", "aria-label":"Photos folder",
+      onclick: () => { f.classList.add("sel"); t.clicked = true; },
+      ondblclick: open,
+      onpointerup: (e) => { if (e.pointerType !== "mouse"){ const n = Date.now(); if (n - last < 450) open(); last = n; } }
+    }, h("span", {class:"em", "aria-hidden":"true"}, "📁"), "Photos");
+    desk.append(f); box.append(desk);
+  },
+  check: t => !!t.ok, note: t => t.ok ? "" : (t.clicked ? "single click only" : "") },
+
+{ id:"U3", sec:"U", title:"Drag and drop",
+  ask:"Drag the photo into the Holiday folder.",
+  build(box, t){
+    const desk = h("div", {class:"desk", style:"min-height:280px"});
+    const target = h("div", {class:"dicon target", style:"position:absolute;right:24px;top:40px"},
+      h("span", {class:"em", "aria-hidden":"true"}, "📁"), "Holiday");
+    const item = h("div", {class:"dicon drag", style:"left:24px;top:120px", role:"img", "aria-label":"Photo beach.jpg"},
+      h("span", {class:"em", "aria-hidden":"true"}, "🖼️"), "beach.jpg");
+    desk.append(target, item); box.append(desk);
+    let sx=0, sy=0, ox=0, oy=0, dragging=false;
+    const over = () => {
+      const a = item.getBoundingClientRect(), b = target.getBoundingClientRect();
+      const cx = a.left + a.width/2, cy = a.top + a.height/2;
+      return cx > b.left && cx < b.right && cy > b.top && cy < b.bottom;
+    };
+    item.addEventListener("pointerdown", e => {
+      if (t.ok) return;
+      dragging = true; item.setPointerCapture(e.pointerId); item.classList.add("lift");
+      sx = e.clientX; sy = e.clientY; t.tried = true;
+    });
+    item.addEventListener("pointermove", e => {
+      if (!dragging) return;
+      item.style.transform = `translate(${ox + e.clientX - sx}px, ${oy + e.clientY - sy}px)`;
+      target.classList.toggle("hot", over());
+    });
+    const end = e => {
+      if (!dragging) return; dragging = false; item.classList.remove("lift");
+      if (over()){
+        t.ok = true; item.remove(); target.classList.remove("hot");
+        target.lastChild.textContent = "Holiday (1 file)";
+        msg(box, "The photo is in the folder.", "ok");
+      } else {
+        ox += e.clientX - sx; oy += e.clientY - sy;
+      }
+    };
+    item.addEventListener("pointerup", end);
+    item.addEventListener("pointercancel", end);
+  },
+  check: t => !!t.ok, note: t => t.ok ? "" : (t.tried ? "tried, not dropped" : "") },
+
+{ id:"U4", sec:"U", title:"Scroll",
+  ask:"Scroll down. Find the green button and click it.",
+  build(box, t){
+    const paras = [
+      "Mare Street Library is open six days a week.",
+      "You can borrow books, DVDs and audiobooks for free.",
+      "There are free computers on the first floor. Book a computer at the front desk.",
+      "We have English conversation clubs on Monday and Thursday evenings.",
+      "Children's story time is every Saturday morning.",
+      "You can print and photocopy. Black and white printing costs 10p a page.",
+      "Free Wi-Fi is available everywhere in the library.",
+      "Please be quiet in the study room.",
+      "Lost something? Ask at the front desk."
+    ];
+    const sb = h("div", {class:"scrollbox", tabindex:"0", "aria-label":"Library notice"},
+      h("h3", {style:"margin-top:0"}, "Library information"),
+      paras.map(p => h("p", null, p)),
+      h("button", {class:"btn go", type:"button", onclick: (e) => { t.ok = true; e.currentTarget.textContent = "Found it ✓"; }}, "I found it"));
+    box.append(sb);
+  },
+  check: t => !!t.ok },
+
+{ id:"U5", sec:"U", title:"Right-click menu",
+  ask:"Right-click the file. Then choose Delete.",
+  build(box, t){
+    const desk = h("div", {class:"desk"});
+    const file = h("div", {class:"dicon", tabindex:"0", role:"img", "aria-label":"File Shopping list"},
+      h("span", {class:"em", "aria-hidden":"true"}, "📄"), "Shopping list.docx");
+    desk.append(file); box.append(desk);
+    let menu = null;
+    const close = () => { if (menu){ menu.remove(); menu = null; } };
+    file.addEventListener("click", () => { file.classList.add("sel"); close(); t.leftOnly = true; });
+    file.addEventListener("contextmenu", e => {
+      e.preventDefault(); close(); file.classList.add("sel"); t.right = true;
+      const r = desk.getBoundingClientRect();
+      menu = h("div", {class:"ctx", role:"menu",
+        style:`left:${Math.min(e.clientX - r.left, r.width - 170)}px;top:${Math.min(e.clientY - r.top, r.height - 170)}px`},
+        ["Open","Copy","Rename","Delete"].map(a => h("button", {type:"button", role:"menuitem", onclick: () => {
+          close(); t.choice = a;
+          if (a === "Delete"){ file.remove(); msg(box, "The file is deleted.", "ok"); }
+          else msg(box, "You chose " + a + ".");
+        }}, a)));
+      desk.append(menu); menu.querySelector("button").focus();
+    });
+    desk.addEventListener("click", e => { if (e.target === desk) close(); });
+  },
+  check: t => t.choice === "Delete",
+  note: t => t.choice && t.choice !== "Delete" ? "chose " + t.choice : (t.right ? "" : (t.leftOnly ? "left-clicked only" : "")) },
+
+{ id:"U6", sec:"U", title:"Know the icons",
+  ask:"Find the right buttons. Follow the steps.",
+  build(box, t){
+    const icons = [["💾","save"],["🖨️","print"],["🔍","search"],["🗑️","bin"],["🔊","sound"],["📶","wifi"]];
+    const steps = [["print","Step 1 of 2: Click the Print button."],["search","Step 2 of 2: Click the Search button."]];
+    t.step = 0; t.hits = [];
+    const p = h("p", {class:"ask", style:"font-weight:700"}, steps[0][1]);
+    const grid = h("div", {class:"picks icons"});
+    icons.forEach(([em, name]) => grid.append(h("button", {class:"pick", type:"button", "aria-label":name,
+      onclick: () => {
+        if (t.step > 1) return;
+        t.hits.push(name === steps[t.step][0]); t.step++;
+        if (t.step < 2) p.textContent = steps[t.step][1];
+        else { p.textContent = "Thank you. Click Next."; }
+      }}, h("span", {class:"em", "aria-hidden":"true"}, em))));
+    box.append(p, grid);
+  },
+  check: t => t.hits.length === 2 && t.hits.every(Boolean),
+  note: t => t.hits.length ? t.hits.filter(Boolean).length + "/2 icons" : "" },
+
+/* ===== Keyboard ===== */
+{ id:"K1", sec:"K", title:"Capital letter",
+  ask:"Type your first name. Start with a capital letter.",
+  build(box, t){
+    const i = h("input", {class:"field", type:"text", autocomplete:"off", "aria-label":"First name", "data-nopaste":"", "data-enter":"next",
+      oninput: () => t.v = i.value});
+    box.append(i); setTimeout(() => i.focus(), 50);
+  },
+  check: t => /^\p{Lu}(?=.*\p{Ll})[\p{L}'’\- ]+$/u.test((t.v || "").trim()),
+  note: t => (t.v || "").trim() ? "typed: " + t.v.trim() : "" },
+
+{ id:"K2", sec:"K", title:"Type an email address",
+  ask:"Type this email address:",
+  build(box, t){
+    box.append(h("p", null, h("span", {class:"copytext"}, "learner@ncclondon.ac.uk")));
+    const i = h("input", {class:"field", type:"email", inputmode:"email", autocomplete:"off", autocapitalize:"off", spellcheck:"false",
+      "aria-label":"Email address", "data-nopaste":"", "data-enter":"next", oninput: () => t.v = i.value});
+    box.append(i); setTimeout(() => i.focus(), 50);
+  },
+  check: t => (t.v || "").trim().toLowerCase() === "learner@ncclondon.ac.uk",
+  note: t => (t.v || "").trim() && (t.v || "").trim().toLowerCase() !== "learner@ncclondon.ac.uk" ? "typed: " + t.v.trim() : "" },
+
+{ id:"K3", sec:"K", title:"Capitals, numbers, symbols",
+  ask:"Type this password. Big and small letters must be the same.",
+  build(box, t){
+    box.append(h("p", null, h("span", {class:"copytext"}, "Hackney26!")));
+    const i = h("input", {class:"field", type:"text", autocomplete:"off", autocapitalize:"off", autocorrect:"off", spellcheck:"false",
+      "aria-label":"Password", "data-nopaste":"", "data-enter":"next", oninput: () => t.v = i.value});
+    box.append(i); setTimeout(() => i.focus(), 50);
+  },
+  check: t => (t.v || "").trim() === "Hackney26!",
+  note: t => (t.v || "").trim() && (t.v || "").trim() !== "Hackney26!" ? "typed: " + t.v.trim() : "" },
+
+{ id:"K4", sec:"K", title:"Correct a mistake",
+  ask:"There is a spelling mistake. Change Hackny to Hackney.",
+  build(box, t){
+    const i = h("input", {class:"field", type:"text", value:"I live in Hackny.", autocomplete:"off", spellcheck:"false",
+      "aria-label":"Sentence to correct", "data-nopaste":"", "data-enter":"next", oninput: () => t.v = i.value});
+    t.v = i.value; box.append(i);
+  },
+  check: t => (t.v || "").trim().replace(/\.$/, "") === "I live in Hackney",
+  note: t => (t.v || "").trim() !== "I live in Hackny." ? "" : "not changed" },
+
+{ id:"K5", sec:"K", title:"Copy and paste",
+  ask:"Copy the address. Paste it in the empty box.",
+  build(box, t){
+    const src = "10 Mare Street, London E8 1AA";
+    box.append(h("label", {class:"lab", for:"k5a"}, "Address"),
+      h("input", {id:"k5a", class:"field", type:"text", readonly:true, value:src}));
+    const i = h("input", {id:"k5b", class:"field", type:"text", autocomplete:"off", "data-enter":"next",
+      onpaste: () => { t.pasted = true; }, oninput: () => t.v = i.value});
+    box.append(h("label", {class:"lab", for:"k5b"}, "Paste here"), i);
+  },
+  check: t => !!t.pasted && norm(t.v) === norm("10 Mare Street, London E8 1AA"),
+  note: t => t.pasted ? "" : (t.v ? "typed instead of pasting" : "") },
+
+/* ===== Internet ===== */
+{ id:"I1", sec:"I", title:"Web address",
+  ask:"Type the college website address in the top bar: ncclondon.ac.uk. Then press Enter.",
+  build(box, t){
+    const page = h("div", {class:"bpage"}, h("p", {class:"muted"}, "New tab"));
+    const bar = h("input", {type:"text", "aria-label":"Address bar", placeholder:"Search or type web address",
+      autocomplete:"off", autocapitalize:"off", spellcheck:"false",
+      onkeydown: e => {
+        if (e.key !== "Enter") return; e.preventDefault();
+        t.v = bar.value; t.entered = true;
+        if (norm(bar.value).includes("ncclondon.ac.uk")){
+          t.ok = true; page.innerHTML = "";
+          page.append(h("h2", null, "New City College"), h("p", null, "Welcome to our website. Find a course today."));
+        } else {
+          page.innerHTML = ""; page.append(h("p", null, "We can't find this page. Check the address."));
+        }
+      }});
+    box.append(h("div", {class:"browser"}, h("div", {class:"bbar"}, h("span", {class:"navb", "aria-hidden":"true"}, "←  →  ⟳"), bar), page));
+  },
+  check: t => !!t.ok,
+  note: t => t.ok ? "" : (t.entered ? "typed: " + t.v : (t.v ? "did not press Enter" : "")) },
+
+{ id:"I2", sec:"I", title:"Search",
+  ask:"Search for: English classes Hackney. Then press Enter or click the search button.",
+  build(box, t){
+    const out = h("div");
+    const go = () => {
+      t.v = q.value; t.done = true;
+      const w = lettersOnly(q.value);
+      t.ok = w.includes("english") && w.includes("class") && w.includes("hackney");
+      out.innerHTML = ""; out.append(h("p", {class:"muted", style:"margin-top:14px"}, "Results for: " + q.value));
+    };
+    const q = h("input", {type:"text", "aria-label":"Search", autocomplete:"off",
+      onkeydown: e => { if (e.key === "Enter"){ e.preventDefault(); go(); } }});
+    box.append(h("div", {class:"browser"},
+      h("div", {class:"bbar"}, h("span", {class:"navb", "aria-hidden":"true"}, "←  →  ⟳"), h("input", {type:"text", value:"searchly.example", readonly:true, tabindex:"-1", "aria-hidden":"true"})),
+      h("div", {class:"bpage"}, h("div", {class:"slogo"}, "Searchly"),
+        h("div", {class:"srow"}, q, h("button", {type:"button", "aria-label":"Search", onclick: go}, "🔍")), out)));
+  },
+  check: t => !!t.ok,
+  note: t => t.done && !t.ok ? "searched: " + t.v : (t.done ? "" : "") },
+
+{ id:"I3", sec:"I", title:"Choose the right result",
+  ask:"Click the result from the college website (ncclondon.ac.uk).",
+  build(box, t){
+    const R = [
+      {s:true, t:"Get your English certificate in 1 day – only £49", u:"www.fast-english-cert.biz", d:"No test needed. Pay now."},
+      {t:"Free events for families in East London", u:"www.london-family-events.org", d:"Music, food and fun this weekend."},
+      {t:"ESOL English courses for adults | New City College", u:"www.ncclondon.ac.uk/courses/esol", d:"Free English classes in Hackney, Tower Hamlets and more."},
+      {t:"Funny cat videos – watch now", u:"www.catclips.tv", d:"The best cat videos of the year."}
+    ];
+    const page = h("div", {class:"bpage"}, h("p", {class:"muted"}, "Results for: English classes Hackney"));
+    R.forEach((r, i) => {
+      const b = h("button", {class:"res", type:"button", "aria-pressed":"false", onclick: () => {
+        page.querySelectorAll(".res").forEach(x => x.setAttribute("aria-pressed", "false"));
+        b.setAttribute("aria-pressed", "true"); t.picked = i;
+      }}, r.s ? h("span", {class:"spons"}, "Sponsored") : null,
+        h("span", {class:"t"}, r.t), h("span", {class:"u"}, r.u), h("span", {class:"d"}, r.d));
+      page.append(b);
+    });
+    box.append(h("div", {class:"browser"}, h("div", {class:"bbar"}, h("span", {class:"navb", "aria-hidden":"true"}, "←  →  ⟳"), h("input", {type:"text", value:"searchly.example/results", readonly:true, tabindex:"-1", "aria-hidden":"true"})), page));
+  },
+  check: t => t.picked === 2,
+  note: t => t.picked === 0 ? "chose the advert" : "" },
+
+{ id:"I4", sec:"I", title:"Find information on a page",
+  ask:"Look at the web page. What time does the library open on Saturday?",
+  build(box, t){
+    const rows = [["Monday","9am – 8pm"],["Tuesday","9am – 8pm"],["Wednesday","Closed"],["Thursday","9am – 8pm"],["Friday","9am – 6pm"],["Saturday","10am – 5pm"],["Sunday","Closed"]];
+    box.append(h("div", {class:"browser"},
+      h("div", {class:"bbar"}, h("span", {class:"navb", "aria-hidden":"true"}, "←  →  ⟳"), h("input", {type:"text", value:"marestreetlibrary.example/opening-times", readonly:true, tabindex:"-1", "aria-hidden":"true"})),
+      h("div", {class:"bpage"}, h("h2", null, "Mare Street Library: opening times"),
+        h("table", {class:"hours"}, h("tbody", null, rows.map(r => h("tr", null, h("th", null, r[0]), h("td", null, r[1]))))))));
+    box.append(h("h3", null, "Saturday: the library opens at…"));
+    choices(box, t, [{label:"9am"},{label:"10am"},{label:"5pm"},{label:"Closed"}]);
+  }, ...pickTask(1) },
+
+{ id:"I5", sec:"I", title:"Fill in an online form",
+  ask:"Fill in every part of the form. Then click Submit.",
+  build(box, t){
+    t.tries = 0;
+    const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+    const sel = (lab, items) => h("select", {"aria-label":lab}, h("option", {value:""}, lab), items.map(x => h("option", {value:x}, x)));
+    const name = h("input", {class:"field", id:"i5n", type:"text", autocomplete:"off"});
+    const d = sel("Day", Array.from({length:31}, (_, i) => i + 1));
+    const m = sel("Month", months);
+    const y = sel("Year", Array.from({length:71}, (_, i) => 2010 - i));
+    const r1 = h("input", {type:"radio", name:"i5how", id:"i5r1", value:"college"});
+    const r2 = h("input", {type:"radio", name:"i5how", id:"i5r2", value:"online"});
+    const cb = h("input", {type:"checkbox", id:"i5c"});
+    const e1 = h("span", {class:"err"}), e2 = h("span", {class:"err"}), e3 = h("span", {class:"err"}), e4 = h("span", {class:"err"});
+    const form = h("div", {class:"oform"},
+      h("h3", {style:"margin-top:0"}, "Course application"),
+      h("label", {class:"lab", for:"i5n"}, "First name"), name, e1,
+      h("p", {class:"lab"}, "Date of birth"), h("div", null, d, m, y), e2,
+      h("p", {class:"lab"}, "How do you want to study?"),
+      h("div", {class:"choice-line"}, r1, h("label", {for:"i5r1"}, "In college")),
+      h("div", {class:"choice-line"}, r2, h("label", {for:"i5r2"}, "Online")), e3,
+      h("div", {class:"choice-line", style:"margin-top:14px"}, cb, h("label", {for:"i5c"}, "I agree to the college rules")), e4,
+      h("div", {style:"margin-top:16px"}, h("button", {class:"btn", type:"button", onclick: () => {
+        t.tries++;
+        const ok1 = name.value.trim().length > 1, ok2 = d.value && m.value && y.value, ok3 = r1.checked || r2.checked, ok4 = cb.checked;
+        e1.textContent = ok1 ? "" : "Type your first name.";
+        e2.textContent = ok2 ? "" : "Choose a day, month and year.";
+        e3.textContent = ok3 ? "" : "Choose one answer.";
+        e4.textContent = ok4 ? "" : "Tick the box.";
+        if (ok1 && ok2 && ok3 && ok4){ t.ok = true; form.innerHTML = ""; form.append(h("p", {class:"msg ok"}, "Thank you. Your form is sent.")); }
+      }}, "Submit")));
+    box.append(form);
+  },
+  check: t => !!t.ok,
+  note: t => t.ok ? (t.tries > 1 ? "needed " + t.tries + " tries" : "") : (t.tries ? "not completed" : "") },
+
+/* ===== Email ===== */
+{ id:"C1", sec:"C", title:"Open and reply",
+  ask:"Open the email from your teacher. Click Reply. Type: Thank you. Then click Send.",
+  build(box, t){
+    const mails = [
+      {from:"Shop Offers", sub:"50% off shoes this week!", body:"Big sale on all shoes. Shop now."},
+      {from:"Ms Patel (Teacher)", sub:"Class tomorrow", body:"Hello, tomorrow our class is in Room 204. Please reply to this email. Thanks, Ms Patel", teacher:true},
+      {from:"Mare Street Library", sub:"Your book is ready", body:"Your book is ready to collect at the front desk."}
+    ];
+    const read = h("div", {class:"mread"}, h("p", {class:"muted"}, "Click an email to open it."));
+    const inbox = h("div", {class:"inbox"});
+    mails.forEach((mm) => {
+      const b = h("button", {class:"mitem", type:"button", "aria-pressed":"false", onclick: () => {
+        inbox.querySelectorAll(".mitem").forEach(x => x.setAttribute("aria-pressed", "false"));
+        b.setAttribute("aria-pressed", "true"); openMail(mm);
+      }}, h("b", null, mm.from), mm.sub);
+      inbox.append(b);
+    });
+    function openMail(mm){
+      if (t.sent) return;
+      read.innerHTML = "";
+      read.append(h("p", null, h("b", null, mm.sub)), h("p", {class:"muted"}, "From: " + mm.from), h("p", null, mm.body),
+        h("button", {class:"btn small", type:"button", onclick: () => reply(mm)}, "↩ Reply"));
+    }
+    function reply(mm){
+      if (read.querySelector("textarea")) return;
+      t.replied = true; t.to = mm.from;
+      const ta = h("textarea", {class:"field", rows:"3", "aria-label":"Your reply"});
+      read.append(h("p", {class:"muted", style:"margin-top:14px"}, "To: " + mm.from), ta,
+        h("div", {style:"margin-top:10px"}, h("button", {class:"btn small go", type:"button", onclick: () => {
+          t.sent = true; t.text = ta.value; t.teacher = !!mm.teacher;
+          read.innerHTML = ""; read.append(h("p", {class:"msg ok"}, "Your email is sent."));
+        }}, "Send")));
+      ta.focus();
+    }
+    box.append(h("div", {class:"mail"}, h("div", {class:"mail-top"}, "Inbox"), h("div", {class:"mail-grid"}, inbox, read)));
+  },
+  check: t => !!t.sent && t.teacher && lettersOnly(t.text).includes("thankyou"),
+  note: t => !t.sent ? (t.replied ? "replied, not sent" : "") : (!t.teacher ? "replied to wrong email" : (lettersOnly(t.text).includes("thankyou") ? "" : "wrong text")) },
+
+{ id:"C2", sec:"C", title:"Write a new email",
+  ask:"Write a new email. To: teacher@ncclondon.ac.uk. Subject: Absence. Message: I am ill today. Then click Send.",
+  build(box, t){
+    box.append(h("div", {class:"note"}, h("p", null, h("b", null, "Write this email:")),
+      h("p", null, "To: teacher@ncclondon.ac.uk"), h("p", null, "Subject: Absence"), h("p", null, "Message: I am ill today.")),
+      h("p", null, "Click New email to start."));
+    const area = h("div", {class:"mread"}, h("button", {class:"btn small", type:"button", onclick: compose}, "✉ New email"));
+    function compose(){
+      t.opened = true; area.innerHTML = "";
+      const to = h("input", {type:"text", inputmode:"email", autocomplete:"off", autocapitalize:"off", spellcheck:"false", "aria-label":"To", placeholder:"Email address"});
+      const sub = h("input", {type:"text", autocomplete:"off", "aria-label":"Subject", placeholder:"Subject"});
+      const body = h("textarea", {class:"field", rows:"4", "aria-label":"Message", placeholder:"Message", style:"margin-top:10px"});
+      const err = h("p", {class:"err"});
+      area.append(h("div", {class:"mrow"}, h("span", null, "To"), to), h("div", {class:"mrow"}, h("span", null, "Subject"), sub), body, err,
+        h("div", {style:"margin-top:10px"}, h("button", {class:"btn small go", type:"button", onclick: () => {
+          if (!to.value.trim()){ err.textContent = "Add an email address in To."; return; }
+          t.sent = true; t.to = to.value.trim().toLowerCase(); t.sub = sub.value; t.body = body.value;
+          area.innerHTML = ""; area.append(h("p", {class:"msg ok"}, "Your email is sent."));
+        }}, "Send")));
+      to.focus();
+    }
+    box.append(h("div", {class:"mail"}, h("div", {class:"mail-top"}, "Email"), area));
+  },
+  check: t => !!t.sent && t.to === "teacher@ncclondon.ac.uk" && lettersOnly(t.sub).includes("absence") && lettersOnly(t.body).includes("illtoday"),
+  note: t => {
+    if (!t.sent) return t.opened ? "not sent" : "";
+    const p = [];
+    if (t.to !== "teacher@ncclondon.ac.uk") p.push("wrong address");
+    if (!lettersOnly(t.sub).includes("absence")) p.push("subject");
+    if (!lettersOnly(t.body).includes("illtoday")) p.push("message");
+    return p.length ? "problem: " + p.join(", ") : "";
+  } },
+
+{ id:"C3", sec:"C", title:"Attach a file",
+  ask:"Attach the file My CV.docx to this email. Then click Send.",
+  build(box, t){
+    const area = h("div", {class:"mread"});
+    const chipBox = h("div");
+    const warn = h("p", {class:"err"});
+    const attach = () => {
+      t.openedPicker = true;
+      const files = ["Photo.jpg","My CV.docx","Shopping list.docx","Bus ticket.pdf"];
+      let sel = null;
+      const back = h("div", {class:"modal-back", role:"dialog", "aria-modal":"true", "aria-label":"Choose a file"});
+      const pick = name => {
+        t.attached = name; chipBox.innerHTML = ""; warn.textContent = "";
+        chipBox.append(h("span", {class:"chip"}, "📎 " + name, h("button", {type:"button", class:"skip", "aria-label":"Remove attachment", onclick: () => { t.attached = null; chipBox.innerHTML = ""; }}, "✕")));
+        back.remove();
+      };
+      const list = h("div", {class:"picks list"});
+      files.forEach(f => {
+        const b = h("button", {class:"pick", type:"button", "aria-pressed":"false",
+          onclick: () => { list.querySelectorAll(".pick").forEach(x => x.setAttribute("aria-pressed", "false")); b.setAttribute("aria-pressed", "true"); sel = f; },
+          ondblclick: () => pick(f)}, "📄 " + f);
+        list.append(b);
+      });
+      back.append(h("div", {class:"modal"}, h("div", {class:"win-bar"}, "Choose a file – Documents"),
+        h("div", {class:"win-body"}, list, h("div", {style:"display:flex;gap:8px;justify-content:flex-end;margin-top:12px"},
+          h("button", {class:"btn small ghost", type:"button", onclick: () => back.remove()}, "Cancel"),
+          h("button", {class:"btn small", type:"button", onclick: () => { if (sel) pick(sel); }}, "Open")))));
+      document.body.append(back);
+      list.querySelector("button").focus();
+    };
+    area.append(
+      h("div", {class:"mrow"}, h("span", null, "To"), h("input", {type:"text", value:"teacher@ncclondon.ac.uk", readonly:true})),
+      h("div", {class:"mrow"}, h("span", null, "Subject"), h("input", {type:"text", value:"My CV", readonly:true})),
+      h("p", {style:"margin-top:10px"}, "Hello, here is my CV. Thank you."),
+      chipBox, warn,
+      h("div", {style:"margin-top:12px;display:flex;gap:8px;flex-wrap:wrap"},
+        h("button", {class:"btn small ghost", type:"button", onclick: attach}, "📎 Attach"),
+        h("button", {class:"btn small go", type:"button", onclick: () => {
+          if (!t.attached){ warn.textContent = "You wrote 'here is my CV' but there is no file. Did you forget to attach it?"; t.forgot = true; return; }
+          t.sent = true; area.innerHTML = ""; area.append(h("p", {class:"msg ok"}, "Your email is sent."));
+        }}, "Send")));
+    box.append(h("div", {class:"mail"}, h("div", {class:"mail-top"}, "New email"), area));
+  },
+  check: t => !!t.sent && t.attached === "My CV.docx",
+  note: t => t.sent && t.attached !== "My CV.docx" ? "attached " + t.attached : (!t.sent && t.attached ? "attached, not sent" : "") },
+
+{ id:"C4", sec:"C", title:"Spot a scam email",
+  ask:"One email is a scam (a trick). Click it. Then click Next.",
+  build(box, t){
+    const mails = [
+      {from:"Ms Patel (Teacher)", addr:"teacher@ncclondon.ac.uk", sub:"Homework", body:"Hello, please finish page 12 for Tuesday. Thanks."},
+      {from:"Royal Mail", addr:"delivery@roya1-mail-parcels.co", sub:"URGENT: pay £1.99 now", body:"Your parcel is waiting. Pay £1.99 in 2 hours or we send it back. Click here: bit.ly/pay-now-rm"},
+      {from:"Mare Street Library", addr:"info@marestreetlibrary.example", sub:"Your book is ready", body:"Your book is ready to collect at the front desk."}
+    ];
+    const read = h("div", {class:"mread"}, h("p", {class:"muted"}, "Click an email to read it."));
+    const inbox = h("div", {class:"inbox"});
+    mails.forEach((mm, i) => {
+      const b = h("button", {class:"mitem", type:"button", "aria-pressed":"false", onclick: () => {
+        inbox.querySelectorAll(".mitem").forEach(x => x.setAttribute("aria-pressed", "false"));
+        b.setAttribute("aria-pressed", "true"); t.picked = i;
+        read.innerHTML = "";
+        read.append(h("p", null, h("b", null, mm.sub)), h("p", {class:"muted"}, "From: " + mm.from + " <" + mm.addr + ">"), h("p", null, mm.body));
+      }}, h("b", null, mm.from), mm.sub);
+      inbox.append(b);
+    });
+    box.append(h("div", {class:"mail"}, h("div", {class:"mail-top"}, "Inbox"), h("div", {class:"mail-grid"}, inbox, read)));
+  }, ...pickTask(1) },
+
+/* ===== Files ===== */
+{ id:"F1", sec:"F", title:"File types",
+  ask:"Which file is a photo?",
+  build(box, t){
+    choices(box, t, [{em:"📄",label:"letter.docx"},{em:"📄",label:"timetable.pdf"},{em:"📄",label:"holiday.jpg"},{em:"📄",label:"song.mp3"}]);
+  }, ...pickTask(2) },
+
+{ id:"F2", sec:"F", title:"Download a file",
+  ask:"Click Download to save the file to your computer.",
+  build(box, t){
+    box.append(h("div", {class:"msg"}, "📄 my-ict-test.txt"),
+      h("p", {style:"margin-top:12px"}, h("button", {class:"btn", type:"button", onclick: () => {
+        t.ok = true;
+        download("my-ict-test.txt", "This is your ICT test file. Keep it. You will upload it in the next question.\n");
+        msg(box, "Look in your Downloads folder.", "ok");
+      }}, "⬇ Download")));
+  },
+  check: t => !!t.ok },
+
+{ id:"F3", sec:"F", title:"Upload a file",
+  ask:"Upload the file you downloaded (my-ict-test.txt). Choose the file, then click Upload.",
+  build(box, t){
+    const inp = h("input", {type:"file", id:"f3", onchange: () => {
+      t.name = inp.files.length ? inp.files[0].name : ""; t.uploaded = false;
+      info.textContent = t.name ? "You chose: " + t.name : "";
+    }});
+    const info = h("p", {class:"muted", style:"margin-top:8px"});
+    box.append(h("div", {class:"oform"}, h("label", {class:"lab", for:"f3", style:"margin-top:0"}, "Your file"), inp, info,
+      h("button", {class:"btn", type:"button", style:"margin-top:8px", onclick: () => {
+        if (!t.name){ msg(box, "Choose a file first.", "bad"); return; }
+        t.uploaded = true; msg(box, "Uploaded: " + t.name, "ok");
+      }}, "Upload")));
+  },
+  check: t => !!t.uploaded && /ict-test/i.test(t.name || ""),
+  note: t => t.name ? (/ict-test/i.test(t.name) ? (t.uploaded ? "" : "chose file, did not click Upload") : "wrong file: " + t.name) : "" },
+
+/* ===== Staying safe ===== */
+{ id:"S1", sec:"S", title:"Private information",
+  ask:"A website asks for your bank card number. You don't know the website. What is the safe thing to do?",
+  build(box, t){
+    choices(box, t, [{label:"Type my card number"},{label:"Close the page"},{label:"Send a photo of my card"}], "list");
+  }, ...pickTask(1) },
+
+{ id:"S2", sec:"S", title:"Strong password",
+  ask:"Which password is the strongest (hardest to guess)?",
+  build(box, t){
+    choices(box, t, [{label:"password"},{label:"123456"},{label:"Fatima1990"},{label:"Blue!Tiger7Bus"}]);
+  }, ...pickTask(3) },
+
+{ id:"S3", sec:"S", title:"Safe website",
+  ask:"You want to buy a bus ticket online. Which website is safe?",
+  build(box, t){
+    const a = (lock, url, warn) => h("span", {class:"addr"}, lock ? "🔒" : h("span", {class:"notsec"}, "⚠ Not secure"), url);
+    choices(box, t, [
+      {node: a(false, "http://cheap-bus-tickets-now.biz"), aria:"Not secure, http cheap-bus-tickets-now.biz"},
+      {node: a(true, "https://tfl.gov.uk/fares"), aria:"Padlock, https tfl.gov.uk fares"},
+      {node: a(true, "https://tfl-gov-uk.ticket-deals.co"), aria:"Padlock, https tfl-gov-uk.ticket-deals.co"}
+    ], "list");
+  }, ...pickTask(1) },
+
+{ id:"S4", sec:"S", title:"Social media",
+  ask:"Which one is OK to post on Facebook for everyone to see?",
+  build(box, t){
+    choices(box, t, [{em:"🏠",label:"My home address"},{em:"💳",label:"A photo of my bank card"},{em:"🌳",label:"A photo of a park"},{em:"🛂",label:"A photo of my passport"}]);
+  }, ...pickTask(2) }
+];
 
 /* ---------- State ---------- */
-let S = null, cur = null;
-function freshState(name, id, email, teacher, temail){
-  return { v:VERSION, name, id, email, teacher, temail, started:Date.now(), idx:0, ans:{}, stopped:false, finished:null };
+const ACTIVE = TASKS.filter(t => CFG.secs.includes(t.sec));
+const ACTIVE_SECS = SECTIONS.filter(s => ACTIVE.some(t => t.sec === s.key));
+let S = null;       // saved state
+let cur = null;     // live state for current task
+
+function freshState(name, id, cls, teacher, temail, level, skill){
+  return { v:VERSION, cfg:CFG.secs, name, id, cls, teacher, temail, level, skill, started:Date.now(), idx:0, ans:{}, notes:{}, finished:null, sent:false };
 }
-const app = $("app");
-function wide(on){ $("main").classList.toggle("narrow", !on); }
 
 /* ---------- Header ---------- */
-function drawRoute(si, end){
+function drawRoute(secKey){
   const r = $("route"), c = $("count");
-  if (si === null){ r.classList.add("hidden"); c.classList.add("hidden"); return; }
+  if (!secKey){ r.classList.add("hidden"); c.classList.add("hidden"); return; }
   r.classList.remove("hidden"); c.classList.remove("hidden");
   r.innerHTML = "";
-  STAGES.forEach((s, i) => r.append(h("li", {class: end ? (i <= si ? "done" : "") : (i < si ? "done" : (i === si ? "now" : "")), "aria-current": !end && i === si ? "step" : null},
-    h("span", {class:"stop", "aria-hidden":"true"}), "Part " + (i + 1))));
+  const at = ACTIVE_SECS.findIndex(s => s.key === secKey);
+  ACTIVE_SECS.forEach((s, i) => {
+    r.append(h("li", {class: i < at ? "done" : (i === at ? "now" : ""), "aria-current": i === at ? "step" : null},
+      h("span", {class:"stop", "aria-hidden":"true"}), s.name));
+  });
+  if (secKey === "END"){ r.querySelectorAll("li").forEach(li => li.className = "done"); c.textContent = "Finished"; return; }
+  c.textContent = "Question " + (S.idx + 1) + " of " + ACTIVE.length;
 }
 
-/* ---------- Start screens ---------- */
+/* ---------- Screens ---------- */
+const app = $("app");
+
 function startScreen(){
-  drawRoute(null); wide(false);
+  drawRoute(null);
   app.innerHTML = "";
   const saved = load();
-  if (saved && saved.v === VERSION && !saved.finished){
-    app.append(h("h1", null, "Reading check"), h("div", {class:"msg"},
-      h("p", null, h("b", null, saved.name), " has a test that is not finished."),
+  if (saved && saved.v === VERSION && !saved.finished && saved.cfg === CFG.secs){
+    app.append(h("h1", null, "Computer skills check"), h("div", {class:"msg"},
+      h("p", null, h("b", null, saved.name), " has a test that is not finished (question " + (saved.idx + 1) + ")."),
       h("div", {style:"display:flex;gap:10px;flex-wrap:wrap"},
         h("button", {class:"btn", type:"button", onclick: () => { S = saved; taskScreen(); }}, "Continue the test"),
         h("button", {class:"btn ghost", type:"button", onclick: () => { clearSave(); startScreen(); }}, "Start a new test"))));
@@ -309,28 +864,43 @@ function startScreen(){
   }
   aboutScreen();
 }
+
+/* About you: name, number, level */
+/* Page 1: the student types the teacher's name from the board. */
 let chosenTeacher = null;
-function savedTeacher(){ return CFG.teachers.length === 1 ? CFG.teachers[0] : chosenTeacher; }
+function savedTeacher(){
+  if (CFG.teachers.length === 1) return CFG.teachers[0];
+  return chosenTeacher;
+}
+/* "  atin   WICKHAM " -> "Atin Wickham", "o'brien" -> "O'Brien" */
+function tidyName(v){
+  return (v || "").replace(/[|;]/g, " ").replace(/\s+/g, " ").trim().toLocaleLowerCase("en-GB")
+    .replace(/(^|[\s\-'’])(\p{L})/gu, (m, a, b) => a + b.toLocaleUpperCase("en-GB"));
+}
 function teacherFirst(){
-  app.innerHTML = ""; drawRoute(null); wide(false);
+  app.innerHTML = "";
+  drawRoute(null);
+  const clean = tidyName;
   const OTHER = "Another teacher";
   let tsel = null;
   const tin = h("input", {class:"field" + (CFG.teachers.length ? " hidden" : ""), id:"tt", type:"text", autocomplete:"off", placeholder:"e.g. Atin", style: CFG.teachers.length ? "margin-top:8px" : null});
-  const er = h("span", {class:"err", role:"alert"});
   if (CFG.teachers.length){
-    tsel = h("select", {class:"field", id:"tts"}, h("option", {value:""}, "Choose the name"),
+    tsel = h("select", {class:"field", id:"tts"}, h("option", {value:""}, "Choose your name"),
       CFG.teachers.map(x => h("option", {value:x.name}, x.name)), h("option", {value:OTHER}, OTHER));
     tsel.addEventListener("change", () => { tin.classList.toggle("hidden", tsel.value !== OTHER); if (tsel.value === OTHER) tin.focus(); er.textContent = ""; });
   }
+  const er = h("span", {class:"err", role:"alert"});
   const go = h("button", {class:"btn", type:"button", onclick: () => {
     let t = null;
     if (tsel && tsel.value && tsel.value !== OTHER) t = CFG.teachers.find(x => x.name === tsel.value);
-    else if (tidyName(tin.value).length > 1) t = {name: tidyName(tin.value), email: CFG.teacher};
-    if (!t){ er.textContent = tsel && !tsel.value ? "Choose the name." : "Type the name."; return; }
-    chosenTeacher = {name: tidyName(t.name), email: t.email || ""};
+    else if (clean(tin.value).length > 1) t = {name: clean(tin.value), email: CFG.teacher};
+    if (!t){ er.textContent = tsel && !tsel.value ? "Choose your name." : "Type your name."; (tsel && tsel.value !== OTHER ? tsel : tin).focus(); return; }
+    t = {name: clean(t.name), email: t.email || ""};
+    chosenTeacher = t;
     aboutScreen();
   }}, "Next");
   tin.addEventListener("keydown", e => { if (e.key === "Enter") go.click(); });
+  tin.addEventListener("input", () => er.textContent = "");
   app.append(...[
     h("h1", null, "What is your teacher's name?"),
     h("p", {style:"font-size:1.15em"}, "👀 Look at the board. Write your teacher's name."),
@@ -338,179 +908,178 @@ function teacherFirst(){
     h("div", {class:"nav"}, h("a", {href:"?mode=teacher", class:"muted"}, "Teachers: setup"), go)].filter(Boolean));
   setTimeout(() => (tsel || tin).focus(), 50);
 }
+
+/* About you: name, number, level, class */
 function aboutScreen(){
   const T = savedTeacher();
   if (!T){ teacherFirst(); return; }
-  app.innerHTML = ""; drawRoute(null); wide(false);
+  app.innerHTML = "";
+  drawRoute(null);
   const clean = v => (v || "").trim().replace(/\|/g, "/");
+  const sel = (id, first, items) => h("select", {class:"field", id}, h("option", {value:""}, first), items.map(x => h("option", {value:x}, x)));
+  app.append(h("h1", null, "About you"),
+    h("p", null, "This test checks how you use a computer. It takes about 30 minutes. If you don't understand a question, click 😕 I don't understand."));
   const nm = h("input", {class:"field", id:"sn", type:"text", autocomplete:"off", placeholder:"e.g. Fatima Ali"});
   const id = h("input", {class:"field", id:"si", type:"text", autocomplete:"off", inputmode:"numeric", placeholder:"e.g. 12345678"});
-  const noid = h("input", {type:"checkbox", id:"noid", style:"width:24px;height:24px", onchange: () => { id.disabled = noid.checked; if (noid.checked){ id.value = ""; e2.textContent = ""; } }});
-  const mail = h("input", {class:"field", id:"se", type:"email", inputmode:"email", autocomplete:"off", autocapitalize:"off", spellcheck:"false", placeholder:"e.g. fatima.ali@gmail.com"});
-  const e1 = h("span", {class:"err", role:"alert"}), e2 = h("span", {class:"err", role:"alert"}), e3 = h("span", {class:"err", role:"alert"});
+  const lv = sel("sl", "Choose your level", ["Pre-Entry","Entry 1","Entry 2","Entry 3","Level 1","Level 2","I don't know"]);
+  const errs = {};
+  const err = (key, el) => { errs[key] = h("span", {class:"err", role:"alert"}); el.after(errs[key]); };
   const go = h("button", {class:"btn", type:"button", onclick: () => {
-    const ok1 = nm.value.trim().length > 1, ok2 = noid.checked || !!id.value.trim(), ok3 = /^\S+@\S+\.\S+$/.test(mail.value.trim());
-    e1.textContent = ok1 ? "" : "Write your name."; e2.textContent = ok2 ? "" : "Write your student number.";
-    if (!ok1){ nm.focus(); return; } if (!ok2){ id.focus(); return; }
-    e3.textContent = ok3 ? "" : "Write your email address."; if (!ok3){ mail.focus(); return; }
-    S = freshState(clean(nm.value), noid.checked ? "No ID" : clean(id.value), clean(mail.value).toLowerCase(), T.name, T.email || CFG.teacher);
+    const checks = [
+      ["nm", nm.value.trim().length > 1, "Write your name.", nm],
+      ["id", !!id.value.trim(), "Write your student number.", id],
+      ["lv", !!lv.value, "Choose your level.", lv]
+    ];
+    let first = null;
+    checks.forEach(([k, ok, text, el]) => { errs[k].textContent = ok ? "" : text; if (!ok && !first) first = el; });
+    if (first){ first.focus(); return; }
+    S = freshState(clean(nm.value), clean(id.value), lv.value, T.name, T.email || CFG.teacher, lv.value, "");
     save(); taskScreen();
   }}, "Start the test");
-  [nm, id, mail].forEach(x => x.addEventListener("keydown", e => { if (e.key === "Enter") go.click(); }));
+  const clear = () => Object.values(errs).forEach(e => { if (e.textContent) e.textContent = ""; });
+  [nm, id].forEach(x => { x.addEventListener("input", clear); x.addEventListener("keydown", e => { if (e.key === "Enter") go.click(); }); });
+  lv.addEventListener("change", clear);
   const change = CFG.teachers.length === 1 ? null :
     h("button", {class:"skip", type:"button", onclick: () => { chosenTeacher = null; teacherFirst(); }}, "Change");
-  app.append(
-    h("h1", null, "Reading check"),
-    h("p", null, "This test checks your reading in English. Read the text. Then click the answer."),
-    h("p", null, "The test starts easy and gets harder. If you don't understand a question, click 😕 I don't understand."),
-    h("label", {class:"lab", for:"sn"}, "Your full name"), nm, e1,
-    h("label", {class:"lab", for:"si"}, "Student number"), id, e2,
-    h("div", {style:"display:flex;align-items:center;gap:10px;margin-top:8px"}, noid, h("label", {for:"noid"}, "I don't have a student number")),
-    h("label", {class:"lab", for:"se"}, "Your email address"), mail, e3,
-    h("div", {class:"nav"}, h("span", {class:"muted"}, "Teacher: " + T.name + " ", change), go));
+  app.append(...[
+    h("label", {class:"lab", for:"sn"}, "Your full name"), nm,
+    h("label", {class:"lab", for:"si"}, "Student number"), id,
+    h("label", {class:"lab", for:"sl"}, "Level"), lv,
+    h("div", {class:"nav"}, h("span", {class:"muted"}, "Test teacher: " + T.name + " ", change), go)].filter(Boolean));
+  err("nm", nm); err("id", id); err("lv", lv);
   setTimeout(() => nm.focus(), 50);
 }
 
-/* ---------- Question builders ---------- */
-function buildPick(box, q, t){
-  const wrap = h("div", {class:"picks" + (q.row ? " row" : ""), role:"group"});
-  q.opts.forEach((o, i) => {
-    const b = h("button", {class:"pick", type:"button", "aria-pressed":"false", onclick: () => {
-      wrap.querySelectorAll(".pick").forEach(x => x.setAttribute("aria-pressed", "false"));
-      b.setAttribute("aria-pressed", "true"); t.picked = i;
-    }});
-    if (typeof o === "string") b.append(h("span", {class:"let", "aria-hidden":"true"}, "ABCD"[i]), h("span", null, o));
-    else b.append(h("span", {class:"em", "aria-hidden":"true"}, o.em), h("span", null, o.label));
-    wrap.append(b);
-  });
-  box.append(wrap);
-}
-function buildOrder(box, q, t){
-  t.seq = [];
-  const slots = h("div", {class:"slots"}), pool = h("div", {class:"pool"});
-  const draw = () => {
-    slots.innerHTML = ""; pool.innerHTML = "";
-    q.items.forEach((_, i) => {
-      const word = t.seq[i];
-      slots.append(h("div", {class:"slot" + (word ? " full" : "")}, h("span", {class:"num", "aria-hidden":"true"}, i + 1),
-        word ? h("button", {class:"chip placed", type:"button", "aria-label": (i + 1) + ": " + word + ". Click to take it out.",
-          onclick: () => { t.seq.splice(i, 1); draw(); }}, word) : null));
-    });
-    q.items.filter(w => !t.seq.includes(w)).forEach(w => pool.append(
-      h("button", {class:"chip", type:"button", onclick: () => { t.seq.push(w); draw(); }}, w)));
-    if (!pool.children.length) pool.append(h("span", {class:"muted"}, "Wrong order? Click a word to take it out."));
-  };
-  draw();
-  box.append(slots, pool);
-}
-function isRight(q, t){
-  if (q.type === "order") return t.seq.length === q.ans.length && t.seq.every((w, i) => w === q.ans[i]);
-  return t.picked === q.ans;
-}
-
 function taskScreen(){
-  if (S.stopped || S.idx >= TASKS.length){ finish(); return; }
-  const q = TASKS[S.idx], st = STAGES[q.st];
+  if (S.idx >= ACTIVE.length){ finish(); return; }
+  const task = ACTIVE[S.idx];
   cur = {};
-  drawRoute(q.st); wide(true);
-  $("count").textContent = "Part " + (q.st + 1) + " – Question " + (q.n + 1) + " of " + st.qs.length;
+  drawRoute(task.sec);
   app.innerHTML = "";
-  const right = h("div", null, h("p", {class:"label"}, "Question " + (q.n + 1) + ": " + q.title),
-    q.quote ? h("p", {class:"quote"}, q.quote) : null, h("p", {class:"ask"}, q.ask));
-  const box = h("div"); right.append(box);
-  (q.type === "order" ? buildOrder : buildPick)(box, q, cur);
-  const last = q.n === st.qs.length - 1 && q.st === STAGES.length - 1;
-  right.append(h("div", {class:"nav"},
-    h("button", {class:"dunno", type:"button", onclick: () => record(q, "s")}, h("span", {class:"em", "aria-hidden":"true"}, "😕"), "I don't understand"),
-    h("button", {class:"btn", type:"button", onclick: () => record(q, isRight(q, cur) ? 1 : 0)}, last ? "Finish" : "Next")));
-  app.append(h("div", {class:"read"},
-    h("div", null, h("p", {class:"label"}, "Read the text"), h("div", {class:"text " + st.kind, html: st.html})), right));
-  if (q.n === 0) window.scrollTo(0, 0);
-}
-function stageScore(si){ return TASKS.filter(t => t.st === si && S.ans[t.id] === 1).length; }
-function record(q, val){
-  S.ans[q.id] = val;
-  S.idx++;
-  const next = TASKS[S.idx];
-  if (!next || next.st !== q.st){ if (stageScore(q.st) < PASS) S.stopped = true; }
-  save(); taskScreen();
+  const ask = h("p", {class:"ask"}, task.ask);
+  app.append(h("h2", null, task.title),
+    ask);
+  const box = h("div");
+  app.append(box);
+  task.build(box, cur);
+  const next = h("button", {class:"btn", type:"button", onclick: () => record(task, cur.__skip ? "s" : (task.check(cur) ? 1 : 0))},
+    S.idx === ACTIVE.length - 1 ? "Finish" : "Next");
+  app.append(h("div", {class:"nav"},
+    h("button", {class:"dunno", type:"button", onclick: () => record(task, "s")}, h("span", {class:"em", "aria-hidden":"true"}, "😕"), "I don't understand"), next));
+  app.querySelectorAll('[data-enter="next"]').forEach(i => i.addEventListener("keydown", e => { if (e.key === "Enter"){ e.preventDefault(); next.click(); } }));
+  window.scrollTo(0, 0);
 }
 
-/* ---------- Scoring ----------
-   A learner moves on only with 5/7 or more. They are placed at the level of the part where they stopped. */
-function summary(){
-  const secs = STAGES.map((s, i) => ({i, level:s.level, of:s.qs.length, done: TASKS.some(t => t.st === i && S.ans[t.id] !== undefined), got: stageScore(i)})).filter(s => s.done);
-  const lastS = secs[secs.length - 1];
-  let level;
-  if (lastS.got >= PASS) level = "Level 2";
-  else if (lastS.i === 0 && lastS.got <= 2) level = "Pre-Entry";
-  else level = lastS.level;
-  const got = secs.reduce((a, s) => a + s.got, 0), of = secs.reduce((a, s) => a + s.of, 0);
-  const mins = Math.max(1, Math.round(((S.finished || Date.now()) - S.started) / 60000));
-  return {secs, got, of, level, mins, lastPart: lastS.i};
+function record(task, val){
+  document.querySelectorAll(".modal-back").forEach(m => m.remove());
+  S.ans[task.id] = val;
+  let n = val === "s" ? "didn't understand" : (task.note ? task.note(cur) : "");
+  if (cur && cur.__pasted && val !== "s") n = (n ? n + "; " : "") + "tried to paste";
+  if (n) S.notes[task.id] = n; else delete S.notes[task.id];
+  S.idx++; save();
+  taskScreen();
 }
-function mark(a){ return a === 1 ? "✓" : a === "s" ? "😕" : "✗"; }
+
+/* ---------- Scoring ---------- */
+function bandFor(p){
+  if (p >= 85) return {name:"Independent", say:"You can use a computer on your own. Great!"};
+  if (p >= 65) return {name:"Mostly independent", say:"You can do most things. A little practice will help."};
+  if (p >= 40) return {name:"Needs some help", say:"You can do some things. We will practise together."};
+  return {name:"Needs a lot of help", say:"That's OK. We will learn step by step."};
+}
+function summary(){
+  const secs = ACTIVE_SECS.map(s => {
+    const ts = ACTIVE.filter(t => t.sec === s.key);
+    return {key:s.key, name:s.name, got: ts.filter(t => S.ans[t.id] === 1).length, of: ts.length};
+  });
+  const got = secs.reduce((a, s) => a + s.got, 0), of = ACTIVE.length;
+  const pct = Math.round(100 * got / of);
+  const mins = Math.max(1, Math.round(((S.finished || Date.now()) - S.started) / 60000));
+  return {secs, got, of, pct, band: bandFor(pct), mins};
+}
 function resultCode(R){
-  const tasks = TASKS.filter(t => S.ans[t.id] !== undefined).map(t => t.id + ":" + S.ans[t.id]).join(",");
-  return [VERSION, S.name, S.id, S.email || "", S.teacher || "", stamp(new Date(S.finished)), R.mins + "m", R.got + "/" + R.of,
-    R.secs.map(s => STAGES[s.i].key + "=" + s.got + "/" + s.of).join(";"), tasks, R.level].join("|");
+  const tasks = ACTIVE.map(t => t.id + ":" + (S.ans[t.id] === undefined ? "-" : S.ans[t.id])).join(",");
+  return [VERSION, S.name, S.id, S.cls, S.teacher || "", stamp(new Date(S.finished)), R.mins + "m", R.got + "/" + R.of,
+    R.secs.map(s => s.key + "=" + s.got + "/" + s.of).join(";"), tasks, R.band.name].join("|");
 }
 function resultText(R){
-  const lines = ["Reading check – results", "", "Name: " + S.name, "Student number: " + S.id, "Email: " + (S.email || "-"), "Teacher: " + (S.teacher || "-"),
-    "Date: " + stamp(new Date(S.finished)), "Time taken: " + R.mins + " minutes", "", "Suggested reading level: " + R.level, ""];
-  R.secs.forEach(s => lines.push("Part " + (s.i + 1) + " (" + s.level + "): " + s.got + " / " + s.of));
+  const lines = [
+    "Computer skills check – results", "",
+    "Name: " + S.name, "Student number: " + S.id, "Digital skills assessment teacher: " + (S.teacher || "-"), "Level: " + (S.cls || "-"),
+    "Date: " + stamp(new Date(S.finished)), "Time taken: " + R.mins + " minutes", "",
+    "Total: " + R.got + " / " + R.of + " (" + R.pct + "%)", "Result: " + R.band.name, ""
+  ];
+  R.secs.forEach(s => lines.push(s.name + ": " + s.got + " / " + s.of));
+  lines.push("");
+  ACTIVE.forEach(t => {
+    const a = S.ans[t.id];
+    lines.push(t.id + " " + t.title + ": " + (a === 1 ? "✓" : a === "s" ? "didn't understand" : "✗") + (S.notes[t.id] && a !== "s" ? " (" + S.notes[t.id] + ")" : ""));
+  });
   lines.push("", "Results code (for the teacher's sheet):", resultCode(R));
   return lines.join("\n");
 }
 
 function finish(){
   if (!S.finished){ S.finished = Date.now(); save(); }
-  const R = summary(), code = resultCode(R);
-  drawRoute(R.lastPart, true); wide(false);
-  $("count").textContent = "Finished";
+  drawRoute("END");
+  const R = summary();
+  const code = resultCode(R);
   app.innerHTML = "";
   app.append(h("h1", null, "Well done, " + S.name.split(" ")[0] + ". You finished!"),
-    h("p", null, "Your reading level today:"), h("p", {class:"band"}, R.level),
-    h("p", {class:"muted"}, "This is only a reading check. Your teacher will decide your class."));
+    h("p", {class:"band"}, R.band.name), h("p", null, R.band.say));
   const grid = h("div", {class:"sec-res"});
   R.secs.forEach(s => grid.append(
-    h("div", null, "Part " + (s.i + 1) + " (" + s.level + ")", h("div", {class:"bar", "aria-hidden":"true"}, h("i", {style:"width:" + Math.round(100 * s.got / s.of) + "%"}))),
+    h("div", null, s.name, h("div", {class:"bar", "aria-hidden":"true"}, h("i", {style:"width:" + Math.round(100 * s.got / s.of) + "%"}))),
     h("div", {style:"text-align:right;font-weight:700"}, s.got + " / " + s.of)));
-  app.append(grid);
+  app.append(grid, h("p", {style:"margin-top:10px"}, h("b", null, "Total: " + R.got + " / " + R.of)));
 
   const temail = S.temail || CFG.teacher;
   const status = h("div", {class:"msg hidden", role:"status"});
-  const done = text => { status.className = "msg ok"; status.textContent = text; };
+  const done = (text) => { status.classList.remove("hidden"); status.className = "msg ok"; status.textContent = text; };
+  const acts = h("div", {class:"actions"});
   if (CFG.form){
     const step = (n, kids) => h("div", {class:"step"}, h("span", {class:"stepnum", "aria-hidden":"true"}, n), h("div", null, kids));
-    app.append(h("div", {class:"laststep"},
+    const last = h("div", {class:"laststep"},
       h("h2", null, S.formSent ? "Did you click Submit? Do it again:" : "Last step: send your results to your teacher"),
       step("1", [h("p", null, h("b", null, "Click this green button:")),
         h("button", {class:"btn go", type:"button", style:"font-size:1.15em;padding:16px 30px", onclick: () => {
-          S.formSent = true; save(); location.href = fillForm(CFG.form, R, code);
+          S.formSent = true; save();
+          location.href = fillForm(CFG.form, R, code);
         }}, "📨 Submit to my teacher – click here")]),
-      step("2", [h("p", null, h("b", null, "A new page opens. Scroll down ⬇ to the bottom. Find this button and click it:")),
-        h("p", null, h("span", {class:"subm"}, "Submit"), "  👈")]),
-      step("3", [h("p", null, h("b", null, "Wait for the message: "), "“Your response was submitted”. Then you are finished. ✓")])),
-      h("h2", {style:"margin-top:24px"}, "Other ways to send"));
-  } else app.append(h("h2", {style:"margin-top:24px"}, "Send your results to your teacher"));
-  const acts = h("div", {class:"actions"});
-  if (temail) acts.append(h("button", {class:"btn ghost", type:"button", onclick: () => {
-    location.href = "mailto:" + temail + "?subject=" + encodeURIComponent("Reading check – " + S.name + " " + S.id) + "&body=" + encodeURIComponent(resultText(R));
-    done("Your email app should open. Click Send.");
-  }}, "Email my teacher"));
+      step("2", [h("p", null, h("b", null, "A new page opens. Scroll down ⬇ to the bottom.")),
+        h("p", null, h("b", null, "Find this button and click it:")),
+        h("div", {class:"msform", role:"img", "aria-label":"Picture of the Submit button at the bottom of the form"},
+          h("div", {class:"msform-q"}, h("span", null, "Result"), h("span", {class:"msform-box"}, R.band.name)),
+          h("div", {class:"msform-foot"}, h("span", {class:"msform-submit"}, "Submit"), h("span", {class:"msform-point", "aria-hidden":"true"}, "👈 Click Submit")))]),
+      step("3", [h("p", null, h("b", null, "Wait for the message: "), "“Your response was submitted”. Then you are finished. ✓")]));
+    app.append(last, h("h2", {style:"margin-top:24px"}, "Other ways to send"));
+  } else {
+    app.append(h("h2", {style:"margin-top:24px"}, "Send your results to your teacher"));
+  }
+  if (temail){
+    acts.append(h("button", {class:"btn ghost", type:"button", onclick: () => {
+      const body = resultText(R);
+      location.href = "mailto:" + temail + "?subject=" + encodeURIComponent("Computer skills check – " + S.name + " " + S.id) + "&body=" + encodeURIComponent(body);
+      done("Your email app should open. Click Send. If nothing opens, click Copy results and paste them into Teams or email.");
+    }}, "Email my teacher"));
+  }
   acts.append(
-    h("button", {class:"btn ghost", type:"button", onclick: () => copyText(resultText(R), ok => done(ok ? "Copied. Now paste it (Ctrl+V) into Teams or an email to your teacher." : "Copy did not work. Select the code below and copy it."))}, "Copy results"),
-    h("button", {class:"btn ghost", type:"button", onclick: () => { download("Reading-results-" + (S.name || "student").replace(/[^\w-]+/g, "_") + ".txt", resultText(R)); done("Saved. Upload this file to your teacher in Teams."); }}, "Download results"));
+    h("button", {class:"btn ghost", type:"button", onclick: () => copyText(resultText(R), ok => ok ? done("Copied. Now paste it (Ctrl+V) into Teams or an email to your teacher.") : done("Copy did not work. Select the code below and copy it."))}, "Copy results"),
+    h("button", {class:"btn ghost", type:"button", onclick: () => { download("ICT-results-" + (S.name || "student").replace(/[^\w-]+/g, "_") + ".txt", resultText(R)); done("Saved. Upload this file to your teacher in Teams."); }}, "Download results"));
   app.append(acts, status);
+
   const ta = h("textarea", {class:"code", rows:"3", readonly:true, "aria-label":"Results code"});
-  ta.value = code; ta.addEventListener("focus", () => ta.select());
+  ta.value = code;
+  ta.addEventListener("focus", () => ta.select());
   app.append(h("p", {class:"muted", style:"margin-top:16px"}, "Results code"), ta);
-  app.append(h("details", null, h("summary", null, "Details for the teacher"),
-    h("p", {class:"muted"}, "Time taken: " + R.mins + " minutes. Learners move to the next part with " + PASS + "/7 or more."),
-    h("table", {class:"det"}, h("thead", null, h("tr", null, h("th", null, "Question"), h("th", null, "Skill"), h("th", null, "Result"))),
-      h("tbody", null, TASKS.filter(t => S.ans[t.id] !== undefined).map(t =>
-        h("tr", null, h("td", null, t.id + " (" + STAGES[t.st].level + ")"), h("td", null, t.title), h("td", null, mark(S.ans[t.id]) + (S.ans[t.id] === "s" ? " Didn't understand" : ""))))))));
+
+  const det = h("table", {class:"det"}, h("thead", null, h("tr", null, h("th", null, "Question"), h("th", null, "Result"), h("th", null, "Note"))),
+    h("tbody", null, ACTIVE.map(t => {
+      const a = S.ans[t.id];
+      return h("tr", null, h("td", null, t.id + " " + t.title), h("td", null, a === 1 ? "✓" : a === "s" ? "😕 Didn't understand" : "✗"), h("td", null, a === "s" ? "" : (S.notes[t.id] || "")));
+    })));
+  app.append(h("details", null, h("summary", null, "Details for the teacher"), h("p", {class:"muted"}, "Time taken: " + R.mins + " minutes"), det));
+
   app.append(h("div", {class:"nav"}, h("span", {class:"muted"}, "Next student on this computer?"),
     h("button", {class:"btn ghost", type:"button", onclick: () => {
       if (confirm("Start a new test? These results will be removed from this screen.")){ clearSave(); S = null; startScreen(); }
@@ -519,85 +1088,148 @@ function finish(){
 }
 
 /* ---------- Microsoft Form: fill placeholder answers ---------- */
+function formValues(R, code){
+  const sec = k => { const x = R.secs.find(s => s.key === k); return x ? x.got + "/" + x.of : "-"; };
+  const details = ACTIVE.map(t => t.id + " " + (S.ans[t.id] === 1 ? "✓" : S.ans[t.id] === "s" ? "😕" : "✗")).join(", ");
+  return {
+    NAME:S.name, NUMBER:S.id, TEACHER:S.teacher || "", LEVEL:FORM_LEVELS[S.level] || S.level || "", CLASS:S.skill || "",
+    DATE:stamp(new Date(S.finished)), MINUTES:String(R.mins), SCORE:R.got + "/" + R.of, PERCENT:R.pct + "%", RESULT:R.band.name,
+    MOUSE:sec("U"), KEYBOARD:sec("K"), INTERNET:sec("I"), EMAIL:sec("C"), FILES:sec("F"), SAFETY:sec("S"),
+    DETAILS:details, RESULTS:code, CODE:code
+  };
+}
 function fillForm(url, R, code){
-  const part = i => { const x = R.secs.find(s => s.i === i); return x ? x.got + "/" + x.of : "-"; };
-  const vals = { NAME:S.name, NUMBER:S.id, EMAIL:S.email || "", TEACHER:S.teacher || "", LEVEL:R.level, RESULT:R.level, SCORE:R.got + "/" + R.of,
-    DATE:stamp(new Date(S.finished)), MINUTES:String(R.mins), PART1:part(0), PART2:part(1), PART3:part(2), PART4:part(3),
-    DETAILS:TASKS.filter(t => S.ans[t.id] !== undefined).map(t => t.id + " " + mark(S.ans[t.id])).join(", "), CODE:code, RESULTS:code };
+  const vals = formValues(R, code);
   const qi = url.indexOf("?");
   if (qi < 0) return url;
-  return url.slice(0, qi) + "?" + url.slice(qi + 1).split("#")[0].split("&").map(pair => {
+  const base = url.slice(0, qi), rest = url.slice(qi + 1).split("#")[0];
+  return base + "?" + rest.split("&").map(pair => {
     const i = pair.indexOf("=");
     if (i < 0) return pair;
     let v; try { v = decodeURIComponent(pair.slice(i + 1).replace(/\+/g, " ")); } catch(e){ return pair; }
+    // Choice questions come through in quotes, e.g. "Entry 1"
     const quoted = /^".*"$/.test(v.trim());
     const key = v.trim().replace(/^"|"$/g, "").toUpperCase();
     if (!Object.prototype.hasOwnProperty.call(vals, key)) return pair;
-    return pair.slice(0, i) + "=" + encodeURIComponent(quoted ? JSON.stringify(vals[key]) : vals[key]);
+    const out = quoted ? JSON.stringify(vals[key]) : vals[key];
+    return pair.slice(0, i) + "=" + encodeURIComponent(out);
   }).join("&");
 }
 
 /* ---------- Teacher page ---------- */
 function teacherScreen(){
-  document.title = "Teacher setup – Reading check";
-  $("brand").textContent = "Reading check: teacher setup";
+  document.title = "Teacher setup – Computer skills check";
+  $("brand").textContent = "Computer skills check: teacher setup";
   app.innerHTML = "";
-  app.append(h("h1", null, "Set up the reading check"),
-    h("p", null, "Fill this in, then share the link with students on Teams or the board."));
-  const em = h("textarea", {class:"field", id:"te", rows:"4", placeholder:"Atin, atin.wickham@ncclondon.ac.uk\nBarry\nJoey"});
-  em.value = CFG.teachers.map(x => x.name + (x.email ? ", " + x.email : "")).join("\n");
+  app.append(h("h1", null, "Set up the test for your class"),
+    h("p", null, "Nothing to install. Fill this in, then share the link with students on Teams or the board. Students' answers are only sent where you choose below."));
+
+  const startList = CFG.teachers.length ? CFG.teachers.map(x => x.name + (x.email ? ", " + x.email : "")).join("\n") : (CFG.teacher ? "Your name, " + CFG.teacher : "");
+  const em = h("textarea", {class:"field", id:"te", rows:"4", placeholder:"Atin, atin.wickham@ncclondon.ac.uk\nBarry, barry.smith@ncclondon.ac.uk\nJoey, joey.jones@ncclondon.ac.uk"});
+  em.value = startList;
   const fm = h("input", {class:"field", id:"tf", type:"url", placeholder:"https://forms.office.com/Pages/ResponsePage.aspx?id=…", value: Q.get("f") || ""});
+  const boxes = SECTIONS.map(s => {
+    const n = ACTIVE.length ? TASKS.filter(t => t.sec === s.key).length : 0;
+    const c = h("input", {type:"checkbox", id:"sec" + s.key, checked: CFG.secs.includes(s.key)});
+    return {s, c, el: h("div", {class:"choice-line"}, c, h("label", {for:"sec" + s.key}, s.name + " (" + n + ")"))};
+  });
   const out = h("textarea", {class:"code", rows:"3", readonly:true, "aria-label":"Your class link"});
   const st = h("p", {class:"muted"});
   const build = () => {
+    const base = location.href.split("?")[0].split("#")[0];
     const p = new URLSearchParams();
     const tl = em.value.split(/\n+/).map(l => { const i = l.indexOf(","); const n = (i < 0 ? l : l.slice(0, i)).trim().replace(/[|;]/g, ""); const e = i < 0 ? "" : l.slice(i + 1).trim().replace(/[|;]/g, ""); return n ? n + (e ? "|" + e : "") : ""; }).filter(Boolean).join(";");
     if (tl) p.set("tl", tl);
     if (fm.value.trim()) p.set("f", fm.value.trim());
-    out.value = location.href.split("?")[0].split("#")[0] + (p.toString() ? "?" + p.toString() : "");
+    const s = boxes.filter(b => b.c.checked).map(b => b.s.key).join("");
+    if (s && s !== "UKICFS") p.set("s", s);
+    out.value = base + (p.toString() ? "?" + p.toString() : "");
+    st.textContent = fm.value.trim() && !/=(NAME|SCORE|RESULTS|CODE)\b/i.test(fm.value) ? "This form link has no placeholder words (like NAME or SCORE), so results won't fill in." : "";
   };
-  [em, fm].forEach(x => x.addEventListener("input", build)); build();
+  [em, fm].forEach(x => x.addEventListener("input", build));
+  boxes.forEach(b => b.c.addEventListener("change", build));
+  build();
+
   app.append(
     h("label", {class:"lab", for:"te"}, "Teachers"), em,
-    h("p", {class:"muted"}, "One name gives a link for your own class. Several names (one per line) gives a drop-down. An email after a comma is optional."),
+    h("p", {class:"muted"}, "Put just your own name to make a link for your class: the first page is then skipped and your name goes with every result. Several names (one per line) gives a drop-down on the first page instead. An email after a comma is optional."),
     h("label", {class:"lab", for:"tf"}, "Microsoft Form link (puts results into Excel)"), fm,
-    h("p", {class:"muted"}, (DEFAULT_FORM ? "A form is already built in. Only fill this in to use a different one. " : "") + "Make a form with Text questions, choose 'Get pre-filled URL' and type these placeholder words in the boxes: NAME, NUMBER, EMAIL, TEACHER, RESULT, SCORE, DATE, MINUTES, PART1, PART2, PART3, PART4, DETAILS."),
+    h("p", {class:"muted"}, DEFAULT_FORM ? "A form is already built into this test. Only fill this in to use a different form." : "Students get a 'Send to my teacher' button. Their results fill in the form, they click Submit, and a new row appears in your Excel sheet."),
+    h("details", null, h("summary", null, "How to make the form (once, about 10 minutes)"),
+      h("p", null, "1. Go to forms.office.com and make a new form, e.g. 'Computer skills check results'."),
+      h("p", null, "2. Add a Text question for each column you want, in any order. Use these titles: Name, Student number, Digital skills assessment teacher, Level, Date, Minutes, Score, Percent, Result, Mouse and screen, Keyboard, Internet, Email, Files, Staying safe, Details. Turn on 'Long answer' for Details."),
+      h("p", null, "3. In Settings, choose who can respond. 'Anyone can respond' lets students at home send without signing in."),
+      h("p", null, "4. Click '…' (top right), then 'Get pre-filled URL'. In each box type the matching placeholder word in capitals: NAME, NUMBER, TEACHER, LEVEL, DATE, MINUTES, SCORE, PERCENT, RESULT, MOUSE, KEYBOARD, INTERNET, EMAIL, FILES, SAFETY, DETAILS."),
+      h("p", null, "5. Click 'Get pre-filled URL', copy the link and paste it in the box above."),
+      h("p", null, "6. To see results in Excel: in the form, open Responses, then 'Open results in Excel'. The sheet is saved in your OneDrive and updates as students submit. You can share it with other teachers.")),
+    h("h3", null, "Sections"), h("div", {class:"tgrid"}, boxes.map(b => b.el)),
     h("h3", null, "Your class link"), out, st,
     h("div", {class:"actions"},
       h("button", {class:"btn", type:"button", onclick: () => copyText(out.value, ok => st.textContent = ok ? "Link copied." : "Select the link and copy it.")}, "Copy link"),
-      h("a", {class:"btn ghost", href:"#", onclick: e => { e.preventDefault(); window.open(out.value, "_blank", "noopener"); }}, "Try the test")),
-    h("h3", null, "How levels are decided"),
-    h("p", {class:"muted"}, "Four parts (Entry 1, Entry 2, Entry 3, Level 1), 7 questions each. A learner needs " + PASS + "/7 to move on; if not, the test ends and they are placed at that part's level. 0–2 in Part 1 gives Pre-Entry. " + PASS + "/7 or more in Part 4 gives Level 2."),
-    h("h2", {style:"margin-top:32px"}, "Results sheet"),
-    h("p", null, "For results sent by email, Teams or file. Paste them here and the results codes are put into a table."));
-  const paste = h("textarea", {class:"field", rows:"6", "aria-label":"Paste results here", placeholder:"RDv1|Fatima Ali|12345678|…"});
+      h("a", {class:"btn ghost", href:"#", onclick: (e) => { e.preventDefault(); window.open(out.value, "_blank", "noopener"); }}, "Try the test")));
+
+  // Collator
+  app.append(h("h2", {style:"margin-top:32px"}, "Results sheet"),
+    h("p", null, "For results sent by email, Teams or a downloaded file. Paste them here and any results codes are put into a table."));
+  const paste = h("textarea", {class:"field", rows:"6", "aria-label":"Paste results here", placeholder:"ICTv3|Fatima Ali|12345678|…"});
   const tableBox = h("div", {class:"overflow"});
-  paste.addEventListener("input", () => {
-    const seen = new Set(), rows = [];
-    (paste.value.match(/RDv1\|[^\r\n"]+/g) || []).forEach(line => {
+  let rows = [];
+  const parse = () => {
+    const found = (paste.value.match(/ICTv[23]\|[^\r\n"]+/g) || []);
+    const seen = new Set();
+    rows = [];
+    found.forEach(line => {
       const p = line.split("|");
-      if (p.length < 11 || seen.has(p[1] + p[2] + p[5])) return;
-      seen.add(p[1] + p[2] + p[5]);
-      const secs = {}; p[8].split(";").forEach(x => { const [k, v] = x.split("="); secs[k] = v; });
-      rows.push({name:p[1], id:p[2], email:p[3], teacher:p[4], date:p[5], mins:p[6].replace("m", ""), score:p[7], secs, level:p[10].trim()});
+      let teacher = "";
+      if (p[0] === "ICTv3"){ teacher = p[4]; p.splice(4, 1); }
+      if (p.length < 10) return;
+      const key = p[1] + p[2] + p[4];
+      if (seen.has(key)) return; seen.add(key);
+      const [got, of] = p[6].split("/").map(Number);
+      const secs = {}; p[7].split(";").forEach(x => { const [k, v] = x.split("="); secs[k] = v; });
+      const tasks = {}; p[8].split(",").forEach(x => { const [k, v] = x.split(":"); tasks[k] = v; });
+      rows.push({name:p[1], id:p[2], cls:p[3], teacher, date:p[4], mins:p[5].replace("m", ""), got, of, pct: of ? Math.round(100 * got / of) : 0, secs, tasks, band:p[9].trim()});
     });
     rows.sort((a, b) => a.name.localeCompare(b.name));
     tableBox.innerHTML = "";
     if (!rows.length){ tableBox.append(h("p", {class:"muted"}, paste.value.trim() ? "No results codes found in the text." : "")); return; }
-    const head = ["Name","Student number","Email","Teacher","Date","Minutes","Reading level","Score"].concat(STAGES.map((s, i) => "Part " + (i + 1) + " (" + s.level + ")"));
-    const body = rows.map(r => [r.name, r.id, r.email, r.teacher, r.date, r.mins, r.level, r.score].concat(STAGES.map(s => r.secs[s.key] || "")));
+    const secKeys = SECTIONS.map(s => s.key).filter(k => rows.some(r => r.secs[k]));
+    const taskIds = TASKS.map(t => t.id).filter(id => rows.some(r => r.tasks[id] !== undefined));
     tableBox.append(h("p", null, h("b", null, rows.length + " student" + (rows.length > 1 ? "s" : ""))),
-      h("table", {class:"coll"}, h("thead", null, h("tr", null, head.map(x => h("th", null, x)))),
-        h("tbody", null, body.map(r => h("tr", null, r.map(x => h("td", null, x)))))),
-      h("div", {class:"actions"}, h("button", {class:"btn", type:"button", onclick: () => {
-        const esc = v => /[",\n]/.test(String(v)) ? '"' + String(v).replace(/"/g, '""') + '"' : String(v);
-        // a leading tab stops Excel reading 5/7 as a date
-        const safe = v => /^\d+\/\d+$/.test(String(v)) ? "\t" + v : v;
-        download("Reading-check-results.csv", "\uFEFF" + [head].concat(body).map(row => row.map(x => esc(safe(x))).join(",")).join("\r\n"), "text/csv");
-      }}, "Download for Excel (CSV)")));
-  });
+      h("table", {class:"coll"},
+        h("thead", null, h("tr", null, ["Name","Student no.","Level","Assessment teacher","Date","Mins","Score","%","Result"].map(x => h("th", null, x)),
+          secKeys.map(k => h("th", null, SECTIONS.find(s => s.key === k).name)), taskIds.map(id => h("th", null, id)))),
+        h("tbody", null, rows.map(r => h("tr", null,
+          [r.name, r.id, r.cls, r.teacher, r.date, r.mins, r.got + "/" + r.of, r.pct, r.band].map(x => h("td", null, x)),
+          secKeys.map(k => h("td", null, r.secs[k] || "")),
+          taskIds.map(id => h("td", null, r.tasks[id] === "1" ? "✓" : r.tasks[id] === "0" ? "✗" : r.tasks[id] === "s" ? "😕" : "")))))));
+    const csv = () => {
+      const esc = v => /[",\n]/.test(String(v)) ? '"' + String(v).replace(/"/g, '""') + '"' : String(v);
+      const head = ["Name","Student number","Level","Digital skills assessment teacher","Date","Minutes","Score","Out of","Percent","Result"].concat(secKeys.map(k => SECTIONS.find(s => s.key === k).name), taskIds.map(id => id + " " + TASKS.find(t => t.id === id).title));
+      const body = rows.map(r => [r.name, r.id, r.cls, r.teacher, r.date, r.mins, r.got, r.of, r.pct, r.band].concat(secKeys.map(k => r.secs[k] || ""), taskIds.map(id => r.tasks[id] === "1" ? 1 : r.tasks[id] === "0" ? 0 : r.tasks[id] === "s" ? "didn't understand" : "")));
+      return [head].concat(body).map(row => row.map(esc).join(",")).join("\r\n");
+    };
+    tableBox.append(h("div", {class:"actions"},
+      h("button", {class:"btn", type:"button", onclick: () => download("ICT-check-results.csv", "\uFEFF" + csv(), "text/csv")}, "Download for Excel (CSV)")));
+  };
+  paste.addEventListener("input", parse);
   app.append(paste, tableBox);
 }
+
+/* ---------- No pasting in the keyboard tasks (typing is the skill) ---------- */
+function blockPaste(e){
+  if (CFG.mode === "teacher" || !S || S.finished) return;
+  const el = e.target;
+  if (!el.closest || !el.closest("[data-nopaste]")) return;
+  e.preventDefault();
+  if (cur) cur.__pasted = true;
+  let tip = el.parentNode.querySelector(":scope > .paste-tip");
+  if (!tip){ tip = h("span", {class:"err paste-tip", role:"alert"}); el.after(tip); }
+  tip.textContent = "Please type this. Don't paste.";
+  clearTimeout(tip._t); tip._t = setTimeout(() => tip.remove(), 4000);
+}
+app.addEventListener("paste", blockPaste, true);
+app.addEventListener("drop", blockPaste, true);
 
 /* ---------- Start ---------- */
 $("bigBtn").addEventListener("click", e => {
@@ -611,7 +1243,7 @@ window.addEventListener("beforeunload", e => { if (S && !S.finished && S.idx > 0
 if (CFG.mode === "teacher") teacherScreen();
 else {
   const saved = load();
-  if (saved && saved.v === VERSION && saved.finished){ S = saved; finish(); }
+  if (saved && saved.v === VERSION && saved.finished && saved.cfg === CFG.secs){ S = saved; finish(); }
   else startScreen();
 }
 })();
